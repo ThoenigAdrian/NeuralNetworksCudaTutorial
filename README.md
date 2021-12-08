@@ -16,6 +16,5 @@ I am planning to cover the following topics
   9.	Scaling
 
 I will not create a “How to setup CUDA Development Environment” video. Since there are already many out there. I linked some guides below.
-Windows/Visual Studio Guide CoffeeBeforeArch : https://www.youtube.com/watch?v=cuCWbztXk4Y&t=48s&ab_channel=CoffeeBeforeArch
-Ubuntu:
-https://www.youtube.com/watch?v=wxNQQP9U1Bc&t=133s&ab_channel=CoffeeBeforeArch
+[Windows/Visual Studio Guide CoffeeBeforeArch](https://www.youtube.com/watch?v=cuCWbztXk4Y&t=48s&ab_channel=CoffeeBeforeArch)
+[Ubuntu](https://www.youtube.com/watch?v=wxNQQP9U1Bc&t=133s&ab_channel=CoffeeBeforeArch)
