@@ -8,7 +8,7 @@
 __global__ void sigmoidActivation(float *z_matrix, float *activation_matrix)
 {
     int index = threadIdx.x;
-	activation_matrix[index] = 1.0 / (1.0 + exp(-z_matrix[index]));
+    activation_matrix[index] = 1.0 / (1.0 + exp(-z_matrix[index]));
 }
 
 int main()
@@ -42,10 +42,9 @@ int main()
 
 	// Copy the results back to the CPU
 	cudaMemcpy(host_activations, device_activations, bytes_z_values, cudaMemcpyDeviceToHost);
-
-  printf("sigmoid({1,2,3,4,5}) = {%f,%f, %f,%f,%f}\n", host_activations[0], host_activations[1], host_activations[2], host_activations[3], host_activations[4]);
-
+	
+        printf("sigmoid({1,2,3,4,5}) = {%f,%f, %f,%f,%f}\n", host_activations[0], host_activations[1], host_activations[2], host_activations[3], host_activations[4]);
 	getchar();
 
-  return 0;
+        return 0;
 }
