@@ -42,7 +42,7 @@ Now we can call cudaMalloc, cudaMalloc expects two arguments, the first is the a
 cudaMalloc(&device_z_values, bytes_z_values);
 cudaMalloc(&device_activations, bytes_activations);
 ```
-## 3 Transfer z Values from CPU to GPU
+## 3. Transfer z Values from CPU to GPU
 
 This can be done with cudaMemcpy. 
 The function signature is as follows:
@@ -61,7 +61,16 @@ cudaMemcpy(device_z_values, host_z_values, bytes_z_values, cudaMemcpyHostToDevic
 
 
 
-## 4 Coding the Kernel
+## 4. Coding the Kernel
+The goal is to compute the activation values of the given z array. 
+The activation function we are going to use for that is the **sigmoid** function. 
+
+For the compiler to know that we need a GPU function instead of a regular one we need to prepend the function definition with **__global__**.  
+One essential thing we are provided with is the threadId. Which gives us the power to coordinate the work between threads. 
+We will use the threadId to decide which activation value each thread will compute.
+
+Each thread get’s one z value and will write the activation value into the activation_matrix buffer.
+The formula on the right is just the sigmoid formula. 
 
 ```c
 __global__ void sigmoidActivation(float *z_matrix, float *activation_matrix)
@@ -71,15 +80,23 @@ __global__ void sigmoidActivation(float *z_matrix, float *activation_matrix)
 ```
 
 ## 5. Launching the Kernel
+
+Alright that’s all the code we need for the kernel. We now have a kernel which can compute all the activation values at once. The only thing left to do now is to call the kernel. This can be done via the triple chevron launch syntax. 
+
 ```c
 // Call the kernel which calculates the activations.
 // 1 = Number of Blocks
 // arraySize is the number of threads
 sigmoidActivation << <1, arraySize >> > (device_z_values, device_activations);
 ```
+For now we just need 5 threads(given by arraySize), later we will see how to scale things up, with more threads.
+
 ## 6. Transfering computed values back to CPU
-	// Copy the results back to the CPU
-	cudaMemcpy(host_activations, device_activations, bytes_z_values, cudaMemcpyDeviceToHost);
+
+While we now computed the activation values we still can't access them because they are still only available on GPU accessible memory.
+In order to be able to print them we need to transfer them to the CPU. 
+// Copy the results back to the CPU
+cudaMemcpy(host_activations, device_activations, bytes_z_values, cudaMemcpyDeviceToHost);
 
 ## 7. Print the results
 ```c
