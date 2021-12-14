@@ -5,7 +5,7 @@ Implement Neural Networks in Cuda from Scratch
 [Youtube Playlist](https://www.youtube.com/watch?v=6StFanGtmvo&list=PLdVoL2No_-X9OK8-20KOyVRki5tBMrGGG&ab_channel=ThoenigAdrian)
 
 I am planning to cover the following topics
-  1.	Implementing activation layer
+  1.	[Implementing activation layer](Part%201%20-%20Activation%20Function)
   2.	Linear layer
   3.	Forward pass with multiple layers
   4.	Forward pass with multiple inputs
