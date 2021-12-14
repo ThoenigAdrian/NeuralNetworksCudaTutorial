@@ -2,8 +2,8 @@
 
 This is a multi part tutorial on how to implement neural networks in CUDA. 
 
-The tutorials are available as videos on youtube or in written form here on github.
-[Youtube Playlist](https://www.youtube.com/watch?v=6StFanGtmvo&list=PLdVoL2No_-X9OK8-20KOyVRki5tBMrGGG&ab_channel=ThoenigAdrian)
+The tutorials are available as videos on Youtube ([Youtube Playlist](https://www.youtube.com/watch?v=6StFanGtmvo&list=PLdVoL2No_-X9OK8-20KOyVRki5tBMrGGG&ab_channel=ThoenigAdrian)) or in written form here on github.
+
 
 I am planning to cover the following topics
   1.	[Implementing activation layer](Part%201%20-%20Activation%20Function)
@@ -15,6 +15,8 @@ I am planning to cover the following topics
   7.	Training loop with multiple iterations
   8.	Cost function
   9.	Scaling
+
+**Setup Cuda Development Environment**
 
 I will not create a “How to setup CUDA Development Environment” video. Since there are already many out there. I linked some guides below:
 
