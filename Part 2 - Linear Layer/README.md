@@ -139,7 +139,7 @@ cudaMemcpy(d_inputs, host_input, bytes_inputs, cudaMemcpyHostToDevice);
 ```
 
 
-## 5. Launching the Kernel
+## 4. Launching the Kernel
 
 Alright that’s all the code we need for the kernel. We now have a kernel which can compute all the z values and activations. The only thing left to do now is to call the kernel. This can be done via the triple chevron launch syntax. 
 
@@ -151,7 +151,7 @@ Alright that’s all the code we need for the kernel. We now have a kernel which
 linear_layer_and_activation << <OUTPUT_NEURONS / 256 + 1, OUTPUT_NEURONS >> > (d_weights, d_biases, d_inputs, d_z, d_activations, OUTPUT_NEURONS, INPUT_NEURONS);
 ```
 
-## 6. Transfering computed values back to CPU
+## 5. Transfering computed values back to CPU
 
 While we now computed the activation values we still can't access them because they are still only available on GPU accessible memory.
 In order to be able to print them we need to transfer them to the CPU. 
@@ -161,7 +161,7 @@ cudaMemcpy(host_activations, d_activations, bytes_activations, cudaMemcpyDeviceT
 cudaMemcpy(host_z, d_z, bytes_z, cudaMemcpyDeviceToHost);
 ```
 
-## 7. Print the results
+## 6. Print the results
 ```c
 std::cout << "Z Values: " << std::endl;
 for (int neuron_nr = 0; neuron_nr < OUTPUT_NEURONS; neuron_nr++)
@@ -189,4 +189,4 @@ Activations:
  [0.70961192]]
 ```
 
-[Full code](kernel.cu)
+### [Full code](kernel.cu)
