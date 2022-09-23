@@ -14,6 +14,11 @@ Each of this thread uses the weights which belongs to it's assigned output neuro
 
 ![](threadtimeline.png)
 
+
+
+### Cuda kernel Code
+
+
 For the cuda kernel we need the following **input information**
 1. The values of the weights
 2. The values of the biases
@@ -26,7 +31,6 @@ And we need to calculate the **follwoing quantites**
 2. activation_values
 
 
-### Cuda kernel Code
 ```
 __global__ void linear_layer_and_activation(float *weight_matrix, float *biases, float *x_inputs, 
 	                                    float *z_values, float *activation_values, 
