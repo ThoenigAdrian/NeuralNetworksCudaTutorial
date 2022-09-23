@@ -57,6 +57,12 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 }
 ```
 
+
+# Boilerplate
+
+The rest of main function code is pretty much the same as for Part 1. Just for completeness sake i am going to include it once more.
+The following tutorials i am won't include it anymore since it's always the same.
+
 ## 1. CPU Buffers
 
 The first thing we are going to do is to create all the needed buffers. 
