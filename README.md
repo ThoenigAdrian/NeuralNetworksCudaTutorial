@@ -6,8 +6,8 @@ The tutorials are available as videos on Youtube ([Youtube Playlist](https://www
 
 
 I am planning to cover the following topics
-  1.	[Implementing activation layer] [Text](Part%201%20-%20Activation%20Function) [Video](https://www.youtube.com/watch?v=6StFanGtmvo)
-  2.	[Linear layer] [Text](Part%202%20-%Linear%20Layer) [Video](https://www.youtube.com/watch?v=W5jFOYnU6fc)
+  1.	Implementing activation layer] Text(Part%201%20-%20Activation%20Function) [Video](https://www.youtube.com/watch?v=6StFanGtmvo)
+  2.	Linear layer [Text](Part%202%20-%Linear%20Layer) [Video](https://www.youtube.com/watch?v=W5jFOYnU6fc)
   3.	Forward pass with multiple layers
   4.	Forward pass with multiple inputs
   5.	Backpropagation
