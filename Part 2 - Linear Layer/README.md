@@ -10,7 +10,7 @@ So we need to come up with a scheme on how to distribute the work among the thre
 We are going to use the follwoing idea:
 
 One thread takes care of one neuron. So if we have 3 output neurons we are going to use 3 threads.
-Each of this threads uses the weights which belongs to it's assigned output neuron and calculates the weighted sum and then calculates the activation value.
+Each of this thread uses the weights which belongs to it's assigned output neuron and calculates the weighted sum and then calculates the activation value.
 
 ![](threadtimeline.png)
 
