@@ -140,10 +140,6 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 ## Defining the shape
 
 
-1. We need one buffer on the CPU for the z values 
-2. And one for the activation values. 
-
-We will call this host_z_values and host_activations. In the cuda world it’s convention to designate data which is stored on **cpu** accessible memory with **host**. And data which is stored on **GPU** accessible memory with **device**. 
 
 ```c
 int main()
@@ -151,20 +147,6 @@ int main()
   const int INPUT_NEURONS = 4;
 	const int OUTPUT_NEURONS = 3;
 
-	// Initialize weights on CPU/RAM
-	const int size_w = INPUT_NEURONS * OUTPUT_NEURONS;
-	float *host_weights = new float [size_w] {0.80f, 0.87f, 0.16f, 0.96f, 0.89f, 0.87f, 0.31f, 0.08f, 0.09f, 0.69f, 0.03f, 0.42f};
-
-	// Initialize biases on CPU/RAM
-	const int size_b = OUTPUT_NEURONS;
-	float *host_biases = new float [size_b] {0.68f, 0.83f, 0.01f};
-	float host_input[INPUT_NEURONS] = { 0.75f,0.98f,0.74f,0.28f };
-
-	// Initialize activations on CPU/RAM
-	float *host_activations = new float [size_b] {0.0, 0.0, 0.0};
-
-	// Initialize z Matrix
-	float *host_z = new float [size_b] {0.0, 0.0, 0.0};
 }
 ```
 
