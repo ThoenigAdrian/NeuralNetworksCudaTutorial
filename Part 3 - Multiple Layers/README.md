@@ -145,7 +145,7 @@ This is the layout for the biases. Coincidentally this is also the layout for th
 One big change we are going to make here is we are also going to store the inputs in the activations. So we can get rid of x_inputs in the function signature.
 ![](activations_layout.png)
 
-**
+
 
 
 ```c
