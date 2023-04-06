@@ -128,10 +128,15 @@ Ok now let's have a look at how we have to change the calculation algorithm. In 
 So here are some drawings for the memory layouts.
 
 **Weights**
+This is the layout for the weights
 ![](weight_memory_layout.png)
+
 **Biases Z values**
+This is the layout for the biases. Coincidentally this is also the layout for the z_values. Because the number of biases matches the number of z_values. 
 ![](bias_z_layout.png)
+
 **Activations**
+One big change we are going to make here is we are also going to store the inputs in the activations. So we can get rid of x_inputs in the function signature.
 ![](activations_layout.png)
 
 **
