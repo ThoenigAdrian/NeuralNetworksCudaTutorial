@@ -90,6 +90,53 @@ So why did I go through so much trouble to explain all of this ?
 The reason is that when we have a neural network with many layers, each layer might have different amount of neurons and therefore might only need a specific amount of threads. So we need a way to protect ourselves from Out of Bounds access if the number of neurons aren't the same across all layers.
 
 
+### Implementing Cuda Kernel with multiple Layers
+
+Alright so next thing to do is to implement to CUDA Kernel so it can handle multiple layers.
+First thing is we are going to define a shape variable (integer array) which tells us the shape of the neural network.
+
+For example: `shape = [8, 6, 4, 1]` would look like this.
+
+![](shape.png)
+
+So we pass this shape to the cuda kernel as well as the shape_length so we know the length of the shape array.
+
+```c
+__global__ void linear_layer_and_activation(float *weight_matrix, float *biases, float *x_inputs, 
+	                                    float *z_values, float *activation_values, 
+					    int *shape, int shape_length)
+```
+
+Now that we have done this we can loop over every layer with a for loop
+
+```c
+__global__ void linear_layer_and_activation(float *weight_matrix, float *biases, float *x_inputs, float *z_values, float *activation_values, 
+					    int *shape, int shape_length)
+	
+{
+	
+	for (int shape_index = 0; shape_index < shape_length; shape_index++)
+	{
+		// calculate weighted sum
+		// calculate activations
+	}
+}
+```
+
+Ok now let's have a look at how we have to change the calculation algorithm. In order to know how to implement it we first need to decide on how we want to store the weights, activations, biases, and z_values for multiple layers. 
+
+So here are some drawings for the memory layouts.
+
+**Weights**
+![](weight_mem.png)
+**Biases Z values**
+![](bias_z_mem.png)
+**Activations**
+![](activations_mem.png)
+
+**
+
+
 ```c
 __global__ void linear_layer_and_activation(float *weight_matrix, float *biases, float *x_inputs, 
 	                                    float *z_values, float *activation_values, 
