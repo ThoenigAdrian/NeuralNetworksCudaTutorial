@@ -90,7 +90,7 @@ So why did I go through so much trouble to explain all of this ?
 The reason is that when we have a neural network with many layers, each layer might have different amount of neurons and therefore might only need a specific amount of threads. So we need a way to protect ourselves from Out of Bounds access if the number of neurons aren't the same across all layers.
 
 
-### Implementing Cuda Kernel with multiple Layers
+## 2. Implementing Cuda Kernel with multiple Layers
 
 Alright so next thing to do is to implement to CUDA Kernel so it can handle multiple layers.
 First thing is we are going to define a shape variable (integer array) which tells us the shape of the neural network.
