@@ -128,11 +128,11 @@ Ok now let's have a look at how we have to change the calculation algorithm. In 
 So here are some drawings for the memory layouts.
 
 **Weights**
-![](weight_mem.png)
+![](weight_memory_layout.png)
 **Biases Z values**
-![](bias_z_mem.png)
+![](bias_z_layout.png)
 **Activations**
-![](activations_mem.png)
+![](activations_layout.png)
 
 **
 
