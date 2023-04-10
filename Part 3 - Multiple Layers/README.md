@@ -62,11 +62,12 @@ Usually I don't like the term undefined behaviour since most of the time one can
 
 So you may have wondered why I choose to run the cuda kernel with 130 threads. Seem pretty arbitrary doesn't it ? Well the reason for that is the memory layout on the GPU.
 
-![](memlayoutoob.png)
-<img src="[https://example.com/example.png](https://user-images.githubusercontent.com/16619270/231000290-3231f15c-dd1f-4831-97e6-b82a555a7e36.png)" alt="Example" width="500"/>
+<img src="https://user-images.githubusercontent.com/16619270/231000290-3231f15c-dd1f-4831-97e6-b82a555a7e36.png" alt="Example" width="800"/>
 
 So remember we call `cudaMalloc(&d_activations, bytes_activations);` where bytes_activations is 12 bytes (3 values * 4 bytes per float). But don't get the 12 bytes we requested, instead we get 512 bytes. Because that's the minimum chunk size which cudaMalloc uses ! 
 This has the side effect that the memory address of **d_z** is 512 bytes away from **d_activations**. So if I had only used 100 Threads I couldn't have shown the bug to you. So we need at least 129 threads to start overriding z_values ! 
+
+<img src="https://user-images.githubusercontent.com/16619270/231001818-511f8af5-41a1-4a8c-a405-db1983ce584c.png" alt="Example" width="800"/>
 
 128 * 4 (number of bytes for floating point) = 512 
 
@@ -145,28 +146,29 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 }
 ```
 
+In order to know how to implement it we first need to decide on how we want to store the weights, activations, biases, and z_values for multiple layers.
+
 ### 3.1 Memory Layout
 
-Ok now let's have a look at how we have to change the calculation algorithm. In order to know how to implement it we first need to decide on how we want to store the weights, activations, biases, and z_values for multiple layers. 
-
-So here are some drawings for the memory layouts.
+We are going to use the following memory Layout
 
 **Weights**
 
+This is the layout for the weights. ![](weights_memory_layout.png)
 
-This is the layout for the weights
-![](weight_memory_layout.png)
 
 **Biases Z values**
 
 
 This is the layout for the biases. Coincidentally this is also the layout for the z_values. Because the number of biases matches the number of z_values. 
+
 ![](bias_z_layout.png)
 
 **Activations**
 
 
 One big change we are going to make here is we are also going to store the inputs in the activations. So we can get rid of x_inputs in the function signature.
+
 ![](activations_layout.png)
 
 
@@ -300,7 +302,7 @@ cudaMemcpy(d_shape, shape, bytes_shape, cudaMemcpyHostToDevice);
 ```
 
 
-## 5. Launching the Kernel - Changing the paraemters
+## 5. Launching the Kernel - Changing the parameters
 
 Alright that’s all the code we need for the kernel. We now have a kernel which can compute all the z values and activations. The only thing left to do now is to call the kernel. This can be done via the triple chevron launch syntax. 
 
