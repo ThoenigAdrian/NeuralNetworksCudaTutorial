@@ -102,8 +102,7 @@ if (id < nr_output_neurons)
 }
 ```
 
-So the full code looks like this:
-
+This are the results:
 
 
 ![bugcomparison](https://user-images.githubusercontent.com/16619270/230922675-a8c16d17-51c4-416c-a97a-fa004827d155.png)
