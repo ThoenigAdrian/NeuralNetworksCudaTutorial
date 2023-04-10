@@ -2,7 +2,7 @@
 
 ## 1. Review - Previous Video Bugs 
 
-In Part 2 we glossed over a bug to keep it short and simple. However we need to understand and fix this bug, because we need it for multiple layers.
+In [Part 2](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/tree/main/Part%202%20-%20Linear%20Layer) we glossed over a bug to keep it short and simple. However we need to understand and fix this bug, because we need it for multiple layers.
 When we call a Cuda Kernel we can decide on how many cuda threads the kernel should run. Last time I ran the kernel with 3 Threads. Remeber that neural network had 4 Input Neurons, and 3 Output Neurons. But what happens when we run it with more threads than needed ? 
 
 For example 130 threads instead:
