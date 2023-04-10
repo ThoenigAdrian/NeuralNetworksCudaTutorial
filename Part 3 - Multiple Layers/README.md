@@ -86,7 +86,7 @@ We just add the following line around the entire code:
 ```c
 if (id < nr_output_neurons) // id refers to the thread number
 ```
-
+This makes sure we only compute activation_values when the thread can be mapped to a neuron. If there are more threads than neurons now , the other threads will just do nothing instead of overwriting other values.
 ```c
 if (id < nr_output_neurons)
 {
