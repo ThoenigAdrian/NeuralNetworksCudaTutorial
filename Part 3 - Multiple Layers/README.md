@@ -80,10 +80,11 @@ Thread Nr. 131 ..... would override `z_values[2]` but we don't have a thread 131
 
 ## 2. The Memory Guard
 
-Now the solution is actually pretty simple we just add the following line around the entire code:
+Now the solution is called a Memory Guard. While it sounds fancy it's actually pretty simple.
+We just add the following line around the entire code:
 
 ```c
-if (id < nr_output_neurons)
+if (id < nr_output_neurons) // id refers to the thread number
 ```
 
 ```c
