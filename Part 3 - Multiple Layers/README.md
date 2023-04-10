@@ -54,7 +54,7 @@ So the reason why this happens is due to out ouf bounds access. Since we have to
 
 ![](oob.png)
 
-How do we solve it ? We use something called a MemoryGuard ! We basically just put a if statement and check if the thread_index is lower or equal than the array size (in our case the nr of output neurons), and only then execute code. Otherwise we don't do anything. Therefore avoid "undefined behaviour" . 
+How do we solve it ? We use something called a MemoryGuard ! We basically just put a if statement around our code. We check if the thread_index is lower or equal than the array size (in our case the nr of output neurons), and only then execute code. Otherwise we don't do anything. Therefore avoiding "undefined behaviour" . 
 
 Usually I don't like the term undefined behaviour since most of the time one can actually figure out what will happen. So that's why I'm also going to explain it in detail how we got this messed up z_values !
 
@@ -63,8 +63,9 @@ Usually I don't like the term undefined behaviour since most of the time one can
 So you may have wondered why I choose to run the cuda kernel with 130 threads. Seem pretty arbitrary doesn't it ? Well the reason for that is the memory layout on the GPU.
 
 ![](memlayoutoob.png)
+<img src="[https://example.com/example.png](https://user-images.githubusercontent.com/16619270/231000290-3231f15c-dd1f-4831-97e6-b82a555a7e36.png)" alt="Example" width="500"/>
 
-So remember we call `cudaMalloc(&d_activations, bytes_activations);` where bytes_activations is 12 bytes (if i did the math in my head correctly). But what actually happens is not that we get the 12 bytes we reserved. But instead we get 512 bytes. Because that's the minimum chunk size which cudaMalloc uses ! 
+So remember we call `cudaMalloc(&d_activations, bytes_activations);` where bytes_activations is 12 bytes (3 values * 4 bytes per float). But don't get the 12 bytes we requested, instead we get 512 bytes. Because that's the minimum chunk size which cudaMalloc uses ! 
 This has the side effect that the memory address of **d_z** is 512 bytes away from **d_activations**. So if I had only used 100 Threads I couldn't have shown the bug to you. So we need at least 129 threads to start overriding z_values ! 
 
 128 * 4 (number of bytes for floating point) = 512 
