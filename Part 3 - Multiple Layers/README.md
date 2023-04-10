@@ -99,7 +99,8 @@ if (id < nr_output_neurons)
 
 	// sig(w*x + b)
 	activation_values[id] = 1.0 / (1.0 + exp(-z_values[id]));
-}```
+}
+```
 
 So the full code looks like this:
 
