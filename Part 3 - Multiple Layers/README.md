@@ -19,7 +19,7 @@ with that:
 linear_layer_and_activation << <1, 130 >> > (d_weights, d_biases, d_inputs, d_z, d_activations, OUTPUT_NEURONS, INPUT_NEURONS);
 ```
 
-## 1.1 Bug Showcase
+### 1.1 Bug Showcase
 We run the kernel again and compare the results:
 
 ![](threads3vs130.png)
@@ -49,7 +49,7 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 	
 }
 ```
-## 1.2 Bug Explanation
+### 1.2 Bug Explanation
 So the reason why this happens is due to out ouf bounds access. Since we have to use the thread_id as our indexing method, this can lead to problems if we have more threads than we have elements in the arrays. 
 
 ![](oob.png)
@@ -58,7 +58,7 @@ How do we solve it ? We use something called a MemoryGuard ! We basically just p
 
 Usually I don't like the term undefined behaviour since most of the time one can actually figure out what will happen. So that's why I'm also going to explain it in detail how we got this messed up z_values !
 
-## The bug under the hood 
+### 1.3 The Details
 
 So you may have wondered why I choose to run the cuda kernel with 130 threads. Seem pretty arbitrary doesn't it ? Well the reason for that is the memory layout on the GPU.
 
