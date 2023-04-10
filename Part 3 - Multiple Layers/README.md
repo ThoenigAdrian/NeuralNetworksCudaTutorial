@@ -1,4 +1,4 @@
-# Multiple Layers - WARNING THIS IS A WORK IN PROGRESS
+# Multiple Layers
 
 ## 1. Review - Previous Video Bugs 
 
@@ -58,7 +58,7 @@ How do we solve it ? We use something called a MemoryGuard ! We basically just p
 
 Usually I don't like the term undefined behaviour since most of the time one can actually figure out what will happen. So that's why I'm also going to explain it in detail how we got this messed up z_values !
 
-### The bug under the hood 
+## The bug under the hood 
 
 So you may have wondered why I choose to run the cuda kernel with 130 threads. Seem pretty arbitrary doesn't it ? Well the reason for that is the memory layout on the GPU.
 
@@ -76,8 +76,7 @@ And Thread Nr. 131 ..... would override z_values[2] but we don't have a thread 1
 
 Have another look at the image above to confirm this. 
 
-
-### The solution 
+## 2. The Memory Guard
 
 Now the solution is actually pretty simple we just add the following line around the entire code:
 
@@ -112,7 +111,7 @@ So why did I go through so much trouble to explain all of this ?
 The reason is that when we have a neural network with many layers, each layer might have different amount of neurons and therefore might only need a specific amount of threads. So we need a way to protect ourselves from Out of Bounds access if the number of neurons aren't the same across all layers.
 
 
-## 2. Implementing Cuda Kernel with multiple Layers
+## 3. Implementing Cuda Kernel with multiple Layers
 
 Alright so next thing to do is to implement to CUDA Kernel so it can handle multiple layers.
 First thing is we are going to define a shape variable (integer array) which tells us the shape of the neural network.
@@ -144,6 +143,8 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 	}
 }
 ```
+
+### 3.1 Memory Layout
 
 Ok now let's have a look at how we have to change the calculation algorithm. In order to know how to implement it we first need to decide on how we want to store the weights, activations, biases, and z_values for multiple layers. 
 
@@ -217,10 +218,7 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 ```
 
 
-
-
-## Defining the shape
-
+## 4. Changing Main (Preparing for the Kernel Launch)
 
 
 ```c
@@ -299,7 +297,7 @@ cudaMemcpy(d_shape, shape, bytes_shape, cudaMemcpyHostToDevice);
 ```
 
 
-## 4. Launching the Kernel - Changing the paraemters
+## 5. Launching the Kernel - Changing the paraemters
 
 Alright that’s all the code we need for the kernel. We now have a kernel which can compute all the z values and activations. The only thing left to do now is to call the kernel. This can be done via the triple chevron launch syntax. 
 
@@ -311,7 +309,7 @@ linear_layer_and_activation << <1 , nr_threads >> > (d_weights, d_biases, d_inpu
 ```
 
 
-## 6. Print the results
+## 6. Evaluating Results
 ```c
 int z_offset = 0;
 for (int shape_index = 1; shape_index < shape_length; shape_index++)
@@ -366,6 +364,8 @@ Activations 2. hidden layer
 Activations 3. hidden layer
 0.299957```
 
+## 7. Verification
+
 The results can be verfied with the follwoing python code:
 ```python
 import numpy
@@ -402,4 +402,8 @@ for layer_index in range(1, 4):
   print(activations[layer_index])
 ```
 
-### [Full code](kernel.cu)
+## 8 Next Video - Multiple Inputs
+
+![nextvidpreview](https://user-images.githubusercontent.com/16619270/230925117-c1540cf9-7b3e-4a57-b2b9-ee13992b8e5c.png)
+
+## [Full code](kernel.cu)
