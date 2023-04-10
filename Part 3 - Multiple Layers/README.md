@@ -264,7 +264,7 @@ float *host_activations = new float [nr_neurons] {0.38f, 0.12f, 1.13f, 1.20f, 0.
 float *host_z = new float [nr_biases] {0.0f};
 ```
 
-## 2. Request GPU Memory for the shape 
+## 4.1 Request GPU Memory for the shape
 
 First we calculate the numbers of bytes needed because we are going to need this for the cudaMalloc call.
 Now we also need to transfer the shape array to the GPU memory via cudaMalloc. And refactor the cuda a little bit
@@ -287,6 +287,8 @@ cudaMalloc(&d_weights, bytes_weights);
 cudaMalloc(&d_activations, bytes_activations);
 cudaMalloc(&d_z, bytes_z);
 cudaMalloc(&d_shape, bytes_shape);	
+
+## 4.2 Copying data to the GPU
 
 // Copy data from CPU Memory to GPU Memory
 cudaMemcpy(d_biases, host_biases, bytes_biases, cudaMemcpyHostToDevice);
