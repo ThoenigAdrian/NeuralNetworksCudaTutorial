@@ -202,16 +202,77 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 ```c
 int main()
 {
-  const int INPUT_NEURONS = 4;
-	const int OUTPUT_NEURONS = 3;
+  const int shape_length = 4;
+  int shape[shape_length] = { 8, 6, 4, 1 };
 
 }
 ```
 
+Calculating the number of weihts according to the shape.
+
+```c
+int nr_weights = 0;
+
+for (int shape_index = 0; shape_index < shape_length - 1; shape_index++)
+{
+	nr_weights += shape[shape_index] * shape[shape_index + 1];
+}
+```
+
+
+Calculating the number of neurons, number of biases and number of z_values.
+
+```c
+// Initialize biases on CPU/RAM
+int nr_neurons = 0;
+int nr_biases = 0;
+
+for (int shape_index = 0; shape_index < shape_length; shape_index++)
+{
+	nr_neurons += shape[shape_index];
+}
+
+nr_biases = nr_neurons - shape[0];
+float *host_biases = new float [nr_biases] {-0.31f, 0.83f, 0.23f, 0.76f, -0.22f, -0.20f, 0.19f, 0.41f, 0.20f, 0.12f, -0.67f};
+
+// The first 8 values are our inputs rest of the array can be initialized with 0.0 
+float *host_activations = new float [nr_neurons] {0.38f, 0.12f, 1.13f, 1.20f, 0.19f, -0.38f, -0.64f, 0.42f};
+
+// Initialize z Matrix
+float *host_z = new float [nr_biases] {0.0f};
+```
 
 ## 2. Request GPU Memory for the shape 
 
 First we calculate the numbers of bytes needed because we are going to need this for the cudaMalloc call.
+Now we also need to transfer the shape array to the GPU memory via cudaMalloc. And refactor the cuda a little bit
+
+```c
+
+// Calculate the amount of memory needed so we can provide this information to cuda malloc
+const size_t bytes_biases = nr_biases * sizeof(float);
+const size_t bytes_z = nr_biases * sizeof(float);
+const size_t bytes_weights = nr_weights * sizeof(float);
+const size_t bytes_activations = nr_neurons * sizeof(float);
+const size_t bytes_shape = sizeof(int) * shape_length;
+
+
+// Allocate GPU device memory
+float *d_biases, *d_weights, *d_activations, *d_z;
+int *d_shape;
+cudaMalloc(&d_biases, bytes_biases);
+cudaMalloc(&d_weights, bytes_weights);
+cudaMalloc(&d_activations, bytes_activations);
+cudaMalloc(&d_z, bytes_z);
+cudaMalloc(&d_shape, bytes_shape);	
+
+// Copy data from CPU Memory to GPU Memory
+cudaMemcpy(d_biases, host_biases, bytes_biases, cudaMemcpyHostToDevice);
+cudaMemcpy(d_weights, host_weights, bytes_weights, cudaMemcpyHostToDevice);
+cudaMemcpy(d_activations, host_activations, bytes_activations, cudaMemcpyHostToDevice);
+cudaMemcpy(d_z, host_z, bytes_z, cudaMemcpyHostToDevice);
+cudaMemcpy(d_shape, shape, bytes_shape, cudaMemcpyHostToDevice);
+```
 
 
 ## 4. Launching the Kernel - Changing the paraemters
@@ -221,13 +282,100 @@ Alright that’s all the code we need for the kernel. We now have a kernel which
 ```c
 // Call the kernel which calculates the activations.
 // Call cuda kernel
+int nr_threads = *std::max_element(shape + 1, shape + shape_length);
 linear_layer_and_activation << <1 , nr_threads >> > (d_weights, d_biases, d_inputs, d_z, d_activations, d_shape, shape_length);
 ```
 
 
 ## 6. Print the results
 ```c
+int z_offset = 0;
+for (int shape_index = 1; shape_index < shape_length; shape_index++)
+{
+	std::cout << "Z Values " << shape_index << ". hidden layer" << std::endl;
+	for (int neuron_nr = 0; neuron_nr < shape[shape_index]; neuron_nr++)
+	{
+		std::cout << host_z[neuron_nr + z_offset] << std::endl;
+	}
+	z_offset += shape[shape_index];
+}
 
+int activations_offset = shape[0]; // Skip input values	
+for (int shape_index = 1; shape_index < shape_length; shape_index++)
+{
+	std::cout << "Activations " << shape_index << ". hidden layer" << std::endl;
+
+	for (int neuron_nr = 0; neuron_nr < shape[shape_index]; neuron_nr++)
+	{
+		std::cout << host_activations[neuron_nr + activations_offset] << std::endl;
+	}
+	activations_offset += shape[shape_index];
+}
+```
+```
+Z Values 1. hidden layer
+-2.044
+-1.0022
+-0.2072
+-0.2223
+-2.4051
+1.8146
+Z Values 2. hidden layer
+-0.0462236
+2.12385
+0.516693
+0.46798
+Z Values 3. hidden layer
+-0.847503
+Activations 1. hidden layer
+0.11466
+0.268509
+0.448385
+0.444653
+0.0827846
+0.859917
+Activations 2. hidden layer
+0.488446
+0.893199
+0.626374
+0.614905
+Activations 3. hidden layer
+0.299957```
+
+The results can be verfied with the follwoing python code:
+```python
+import numpy
+import numpy as np
+
+weights = numpy.array([1.62, -0.61, -0.53, -1.07, 0.87, -2.30, 1.74, -0.76, 0.32, -0.25, 1.46, -2.06, -0.32, -0.38, 1.13,
+                       -1.10, -0.17, -0.88, 0.04, 0.58, -1.10, 1.14, 0.90, 0.50, 0.90, -0.68, -0.12, -0.94, -0.27, 0.53,
+                       -0.69, -0.40, -0.69, -0.85, -0.67, -0.01, -1.12, 0.23, 1.66, 0.74, -0.19, -0.89, -0.75, 1.69, 0.05,
+                       -0.64, 0.19, 2.10, 0.12, 0.62, 0.30, -0.35, -1.14, -0.35, -0.21, 0.59, 0.84, 0.93, 0.29, 0.89, -0.75,
+                       1.25, 0.51, -0.30, 0.49, -0.08, 1.13, 1.52, 2.19, -1.40, -1.44, -0.50, 0.16, 0.88, 0.32, -2.02])
+biases = numpy.array([-0.31, 0.83, 0.23, 0.76, -0.22, -0.20, 0.19, 0.41, 0.20, 0.12, -0.67])
+activations = np.zeros(19)
+activations[:8] = np.array([0.38, 0.12, 1.13, 1.20, 0.19, -0.38, -0.64, 0.42])
+activations = [activations[:8].reshape(-1, 1), activations[8:14].reshape(-1, 1), activations[14:18].reshape(-1, 1), activations[18:].reshape(-1, 1)]
+weights = [weights[:48].reshape(6, 8), weights[48:72].reshape(4, 6), weights[72:].reshape(1, 4)]
+biases = [biases[:6].reshape(-1, 1), biases[6:10].reshape(-1, 1), biases[10:].reshape(-1, 1)]
+
+def sig(z):
+    return 1.0/(1.0+numpy.exp(-z))
+
+z_values = []
+for layer_index in range(3):
+  z = numpy.dot(weights[layer_index], activations[layer_index]) + biases[layer_index]
+  z_values.append(z)
+  activations[layer_index + 1] += sig(z)
+
+
+print("Z Values: ")
+for layer_index in range(3):
+  print(z_values[layer_index])
+
+print("Activations: ")
+for layer_index in range(1, 4):
+  print(activations[layer_index])
 ```
 
 ### [Full code](kernel.cu)
