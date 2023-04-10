@@ -117,16 +117,16 @@ The reason is that when we have a neural network with many layers, each layer mi
 ## 3. Implementing Cuda Kernel with multiple Layers
 
 Alright so next thing to do is to implement to CUDA Kernel so it can handle multiple layers.
-First thing is we are going to define a shape variable (integer array) which tells us the shape of the neural network.
+First we are going to define a shape variable (integer array) which tells us the shape of the neural network.
 
 For example: `shape = [8, 6, 4, 1]` would look like this.
 
 ![](shape.png)
 
-So we pass this shape to the cuda kernel as well as the shape_length so we know the length of the shape array.
+We pass this shape to the cuda kernel as well as the shape_length so we know the length of the shape array.
 
 ```c
-__global__ void linear_layer_and_activation(float *weight_matrix, float *biases, float *x_inputs, 
+__global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 	                                    float *z_values, float *activation_values, 
 					    int *shape, int shape_length)
 ```
@@ -147,7 +147,7 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 }
 ```
 
-In order to know how to implement it we first need to decide on how we want to store the weights, activations, biases, and z_values for multiple layers.
+In order to know how to implement the inner part of the loop we first need to decide on how we want to store the weights, activations, biases, and z_values for multiple layers.
 
 ### 3.1 Memory Layout
 
@@ -234,7 +234,7 @@ int main()
 }
 ```
 
-Calculating the number of weihts according to the shape.
+Calculating the number of weights according to the shape.
 
 ```c
 int nr_weights = 0;
