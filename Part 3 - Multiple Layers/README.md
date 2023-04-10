@@ -364,7 +364,8 @@ Activations 2. hidden layer
 0.626374
 0.614905
 Activations 3. hidden layer
-0.299957```
+0.299957
+```
 
 ## 7. Verification
 
