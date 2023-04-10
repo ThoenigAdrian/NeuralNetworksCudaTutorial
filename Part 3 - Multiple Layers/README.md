@@ -19,8 +19,8 @@ with that:
 linear_layer_and_activation << <1, 130 >> > (d_weights, d_biases, d_inputs, d_z, d_activations, OUTPUT_NEURONS, INPUT_NEURONS);
 ```
 
-
-we run the kernel again and compare the results:
+## 1.1 Bug Showcase
+We run the kernel again and compare the results:
 
 ![](threads3vs130.png)
 
@@ -49,7 +49,7 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 	
 }
 ```
-
+## 1.2 Bug Explanation
 So the reason why this happens is due to out ouf bounds access. Since we have to use the thread_id as our indexing method, this can lead to problems if we have more threads than we have elements in the arrays. 
 
 ![](oob.png)
