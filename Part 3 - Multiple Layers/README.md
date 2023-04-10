@@ -85,6 +85,28 @@ Now the solution is actually pretty simple we just add the following line around
 if (id < nr_output_neurons)
 ```
 
+```c
+if (id < nr_output_neurons)
+{
+	// w*x
+	for (int neuron_nr = 0; neuron_nr < nr_input_neurons; neuron_nr++)
+	{
+		z_values[id] += weight_matrix[(nr_input_neurons)* id + neuron_nr] * x_inputs[neuron_nr];
+	}
+
+	// w*x + b
+	z_values[id] += biases[id];
+
+	// sig(w*x + b)
+	activation_values[id] = 1.0 / (1.0 + exp(-z_values[id]));
+}```
+
+So the full code looks like this:
+
+
+
+![bugcomparison](https://user-images.githubusercontent.com/16619270/230922675-a8c16d17-51c4-416c-a97a-fa004827d155.png)
+
 So why did I go through so much trouble to explain all of this ? 
 
 The reason is that when we have a neural network with many layers, each layer might have different amount of neurons and therefore might only need a specific amount of threads. So we need a way to protect ourselves from Out of Bounds access if the number of neurons aren't the same across all layers.
@@ -193,6 +215,8 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 	
 }
 ```
+
+
 
 
 ## Defining the shape
