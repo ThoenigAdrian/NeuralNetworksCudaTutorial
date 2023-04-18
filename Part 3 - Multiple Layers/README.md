@@ -22,7 +22,7 @@ linear_layer_and_activation << <1, 130 >> > (d_weights, d_biases, d_inputs, d_z,
 
 we run the kernel again and compare the results:
 
-![](threads3vs130.png)
+![](readme_images/threads3vs130.png)
 
 Here we can see that we get the wrong results when we use more threads than necessary. Why does this happen ? 
 
@@ -52,7 +52,7 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 
 So the reason why this happens is due to out ouf bounds access. Since we have to use the thread_id as our indexing method, this can lead to problems if we have more threads than we have elements in the arrays. 
 
-![](oob.png)
+![](readme_images/oob.png)
 
 How do we solve it ? We use something called a MemoryGuard ! We basically just put a if statement and check if the thread_index is lower or equal than the array size (in our case the nr of output neurons), and only then execute code. Otherwise we don't do anything. Therefore avoid "undefined behaviour" . 
 
@@ -62,7 +62,7 @@ Usually I don't like the term undefined behaviour since most of the time one can
 
 So you may have wondered why I choose to run the cuda kernel with 130 threads. Seem pretty arbitrary doesn't it ? Well the reason for that is the memory layout on the GPU.
 
-![](memlayoutoob.png)
+![](readme_images/memlayoutoob.png)
 
 So remember we call `cudaMalloc(&d_activations, bytes_activations);` where bytes_activations is 12 bytes (if i did the math in my head correctly). But what actually happens is not that we get the 12 bytes we reserved. But instead we get 512 bytes. Because that's the minimum chunk size which cudaMalloc uses ! 
 This has the side effect that the memory address of **d_z** is 512 bytes away from **d_activations**. So if I had only used 100 Threads I couldn't have shown the bug to you. So we need at least 129 threads to start overriding z_values ! 
