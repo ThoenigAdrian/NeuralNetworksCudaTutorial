@@ -72,7 +72,7 @@ Usually I don't like the term undefined behaviour since most of the time one can
 
 ### 1.3 The Details
 
-So you may have wondered why I choose to run the cuda kernel with 130 threads. Seem pretty arbitrary doesn't it ? Well the reason for that is the memory layout on the GPU.
+So you may have wondered why I choose to run the cuda kernel with 130 threads. Seems pretty arbitrary doesn't it ? Well the reason for that is the memory layout on the GPU.
 
 <img src="https://user-images.githubusercontent.com/16619270/231000290-3231f15c-dd1f-4831-97e6-b82a555a7e36.png" alt="Example" width="800"/>
 
