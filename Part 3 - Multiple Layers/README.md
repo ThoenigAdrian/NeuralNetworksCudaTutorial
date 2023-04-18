@@ -1,5 +1,14 @@
 # Multiple Layers
 
+In Part 3 we are going to make the changes needed so we run a neural network with multiple layers.
+
+What we did so far:
+Part 1 - Implement Cuda Kernel which can execute the sigmoid activation function for many values at once
+Part 2 - Add the Linear Layer part (Dot Product) to our Kernel
+
+This part:
+Part 3 - Change the kernel so we can feedforward through multiple layers.
+
 ## 1. Review - Previous Video Bugs 
 
 In [Part 2](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/tree/main/Part%202%20-%20Linear%20Layer) we glossed over a bug to keep it short and simple. However we need to understand and fix this bug, because we need it for multiple layers.
