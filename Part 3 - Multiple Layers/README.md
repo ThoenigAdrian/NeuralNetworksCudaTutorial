@@ -66,7 +66,7 @@ So the reason why this happens is due to out ouf bounds access. Since we have to
 
 ![](readme_images/oob.png)
 
-How do we solve it ? We use something called a MemoryGuard ! We basically just put a if statement around our code. We check if the thread_index is lower or equal than the array size (in our case the nr of output neurons), and only then execute code. Otherwise we don't do anything. Therefore avoiding "undefined behaviour" . 
+How do we solve it ? We use something called a MemoryGuard ! We basically just put a if statement around our code. We check if the thread_index is lower or equal than the array size (in our case the **nr of output neurons**), and only then execute code. Otherwise we don't do anything. Therefore avoiding "undefined behaviour" . 
 
 Usually I don't like the term undefined behaviour since most of the time one can actually figure out what will happen. So that's why I'm also going to explain it in detail how we got this messed up z_values !
 
