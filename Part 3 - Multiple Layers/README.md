@@ -6,7 +6,7 @@ What we did so far:
 * Part 1 - Implement Cuda Kernel which can execute the sigmoid activation function for many values at once
 * Part 2 - Add the Linear Layer part (Dot Product) to our Kernel
 
-This part:
+What we will do in this part:
 * Part 3 - Change the kernel so we can feedforward through multiple layers.
 
 ## 1. Review - Previous Video Bugs 
