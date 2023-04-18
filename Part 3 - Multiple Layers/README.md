@@ -6,7 +6,7 @@ What we did so far:
 * Part 1 - Implement Cuda Kernel which can execute the sigmoid activation function for many values at once
 * Part 2 - Add the Linear Layer (Dot Product) to our Kernel
 
-So far we only had inputs and outputs and no hidden layers.
+So far we only had inputs and outputs but no hidden layers.
 
 What we will do in this part:
 
