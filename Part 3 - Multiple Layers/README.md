@@ -179,7 +179,7 @@ From Index 54 to 59 are all the incoming weights for neuron nr 2 of the 2nd hidd
 From Index 60 to 65 are all the incoming weights for neuron nr 3 of the the 2nd hidden layer.
 And finally from 66 to 71 , the incoming weights for neuron nr 4.
 
-On the bottom of the image I wrote out the formula for how to calculate the index for the 2nd Hidden Layer and the 3rd hidden layer.
+On the bottom of the image I wrote out the formula for how to calculate the index for the 2nd Hidden Layer and the output layer.
 
 
 
