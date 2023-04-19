@@ -8,7 +8,7 @@ The tutorials are available as videos on Youtube ([Youtube Playlist](https://www
 I am planning to cover the following topics
   1.	[Implementing activation layer](Part%201%20-%20Activation%20Function)   [Youtube Video](https://www.youtube.com/watch?v=6StFanGtmvo)
   2.	[Linear layer](Part%202%20-%20Linear%20Layer)   [Youtube Video](https://www.youtube.com/watch?v=W5jFOYnU6fc) 
-  3.	[Forward pass with multiple layers](Part%203%20-%20Multiple%20Layers) [Youtube Video](https://www.youtube.com/watch?v=ScMzIvxBSi4) 
+  3.	[Forward pass with multiple layers](Part%203%20-%20Multiple%20Layers) [Youtube Video](https://youtu.be/2H3kD2HP2uo) 
   4.	Forward pass with multiple inputs
   5.	Backpropagation
   6.	Applying gradient descent
