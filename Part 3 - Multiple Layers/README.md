@@ -168,42 +168,36 @@ We are going to use the following memory Layout
 **Weights**
 
 This is the layout for the weights. ![](readme_images/weights_memory_layout.png)
+
 We start with the incoming weights which belong to the neurons in the 1st hidden layer. All the incoming weights which belong to a certain neuron will be next to each other in memory. 
 
-Show image
 If we want to get the weights of the 2nd hidden Layer we need to start with an index of 48. This is because 8 * 6 = 48.
-So from Index 48 until Index 53 are all the incoming weights for neurons nr 1 of the second hidden layer.
-From Index 54 to 59 are all the incoming weights for neuron nr 2 of the second hidden layer.
-From Index 60 to 65 are all the incoming weights for neuron nr 3 of the second hidden layer.
+
+
+So from Index 48 until Index 53 are all the incoming weights for neurons nr 1 of the 2nd hidden layer.
+From Index 54 to 59 are all the incoming weights for neuron nr 2 of the 2nd hidden layer.
+From Index 60 to 65 are all the incoming weights for neuron nr 3 of the the 2nd hidden layer.
 And finally from 66 to 71 , the incoming weights for neuron nr 4.
 
-On the bottom I wrote out the formula for how to calculate the index for the 2nd Hidden Layer and the 3rd hidden layer.
+On the bottom of the image I wrote out the formula for how to calculate the index for the 2nd Hidden Layer and the 3rd hidden layer.
 
-Next we take care of  biases array. The size of the array should be the size of all the biases. So for our neural network this would be 6+4+1. Which adds up to 14 in total
-Add drawing for biases
-Now we also need the Z_values 
-Add drawing for z values
-Activation values
-Add drawing for activations
-Alright so the only thing missing now is to define the memory layout for the activation values. Warning this layout is a little bit different compare to the z_values since we are also going to store the inputs in this array. But other than that it’s pretty much the same.
+
 
 
 **Biases Z values**
 
-
-This is the layout for the biases. Coincidentally this is also the layout for the z_values. Because the number of biases matches the number of z_values. 
+This is the layout for the biases. The size of the array should be the size of all the biases. So for our neural network this would be 6+4+1 (8 is excluded because the input layer doesn't have biases. Coincidentally this is also the layout for the z_values. Because the number of biases matches the number of z_values. 
 
 ![](readme_images/bias_z_layout.png)
 
 **Activations**
 
-
-One big change we are going to make here is we are also going to store the inputs in the activations. So we can get rid of x_inputs in the function signature.
+Alright so the only thing missing now is to define the memory layout for the activation values. Warning this layout is a little bit different compared to the z_values since we are also going to store the inputs in this array (so we can get rid of x_inputs in the function signature).
 
 ![](readme_images/activations_layout.png)
 
 
-
+Now we can finish the CUDA Kernel. We introduce some offset variables to help us to index into the correct layers. `int layer_offset_z_b, layer_offset_weights, layer_offset_activations. We use this to update the z_value and activation value calculations (see code below). And at the end of each layer we update the offset variables we just introduced. IMPORTANT: We need to update this offset variables **outside of the Memory Guard** otherwise different threads will have different offsets.
 
 ```c
 __global__ void linear_layer_and_activation(float *weight_matrix, float *biases, float *x_inputs, 
@@ -251,6 +245,7 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 }
 ```
 
+Ok one additional thing you might have observed in the code below is a call to a function called `__synchtreads()` . This is the final piece to making our kernel work. Syncthreads makes sure all the threads which are executing code will meet up at this point an be synchronized at this specific point. The reason why this part is crucial in our code is because otherwise threads which don't need to execute the code for computing the activations, would go on and get into the next part of the for loop and start computing activations for the next layer, while the activations of the previous layer haven't been computed yet.
 
 ## 4. Changing Main (Preparing for the Kernel Launch)
 
