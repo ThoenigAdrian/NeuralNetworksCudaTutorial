@@ -76,9 +76,9 @@ So you may have wondered why I choose to run the cuda kernel with 130 threads. S
 
 <img src="https://user-images.githubusercontent.com/16619270/231000290-3231f15c-dd1f-4831-97e6-b82a555a7e36.png" alt="Example" width="800"/>
 
-So remember we call `cudaMalloc(&d_activations, bytes_activations);` where bytes_activations is 12 bytes (3 values * 4 bytes per float). But don't get the 12 bytes we requested, instead we get 512 bytes. Because that's the minimum chunk size which cudaMalloc uses ! 
+So remember we call `cudaMalloc(&d_activations, bytes_activations);` where bytes_activations is 12 bytes (3 values * 4 bytes per float). But we don't get the 12 bytes we requested. Instead we get 512 bytes ! Because that's the chunk size which cudaMalloc works with ! 
 This has the side effect that the memory address of **d_z** is 512 bytes away from **d_activations**. 
-if I had only used 100 Threads I couldn't have shown the bug to you. So we need at least 129 threads to start overriding z_values ! 
+If I had only used 100 Threads I couldn't have shown the bug to you. So we need at least 129 threads to start overriding z_values ! 
 
 <img src="https://user-images.githubusercontent.com/16619270/231001818-511f8af5-41a1-4a8c-a405-db1983ce584c.png" alt="Example" width="800"/>
 
