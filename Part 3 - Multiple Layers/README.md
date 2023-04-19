@@ -10,12 +10,12 @@ So far we only had inputs and outputs but no hidden layers.
 
 What we will do in this part:
 
-* Part 3 - Change the kernel so we can feedforward through multiple layers.
+* Part 3 - Feedforward through multiple layers
 
 ## 1. Review - Previous Video Bugs 
 
-In [Part 2](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/tree/main/Part%202%20-%20Linear%20Layer) we glossed over a bug to keep it short and simple. However we need to understand and fix this bug, because we need it for multiple layers.
-When we call a Cuda Kernel we can decide on how many cuda threads the kernel should run. Last time I ran the kernel with 3 Threads. Remeber that neural network had 4 Input Neurons, and 3 Output Neurons. But what happens when we run it with more threads than needed ? 
+In [Part 2](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/tree/main/Part%202%20-%20Linear%20Layer) we glossed over a bug to keep it short and simple. However, we need to understand and fix this bug, because we need it for multiple layers.
+When we call a Cuda Kernel we can decide on how many cuda threads the kernel should run. Last time I ran the kernel with 3 Threads. Remember that neural network had 4 Input Neurons, and 3 Output Neurons. But what happens when we run it with more threads than needed ? 
 
 For example 130 threads instead:
 
@@ -66,17 +66,17 @@ So the reason why this happens is due to out ouf bounds access. Since we have to
 
 ![](readme_images/oob.png)
 
-How do we solve it ? We use something called a MemoryGuard ! We basically just put a if statement around our code. We check if the thread_index is lower or equal than the array size (in our case the **nr of output neurons**), and only then execute code. Otherwise we don't do anything. Therefore avoiding "undefined behaviour" . 
+How do we solve it ? We use something called a MemoryGuard ! We basically just put an if statement around our code. We check if the thread_index is lower or equal than the array size (in our case the **nr of output neurons**), and only then execute code. Otherwise, we don't do anything. Therefore avoiding "undefined behaviour" . 
 
 Usually I don't like the term undefined behaviour since most of the time one can actually figure out what will happen. So that's why I'm also going to explain it in detail how we got this messed up z_values !
 
 ### 1.3 The Details
 
-So you may have wondered why I choose to run the cuda kernel with 130 threads. Seems pretty arbitrary doesn't it ? Well the reason for that is the memory layout on the GPU.
+So you may have wondered why I choose to run the cuda kernel with 130 threads. Seems pretty arbitrary, doesn't it ? Well the reason for that is the memory layout on the GPU.
 
 <img src="https://user-images.githubusercontent.com/16619270/231000290-3231f15c-dd1f-4831-97e6-b82a555a7e36.png" alt="Example" width="800"/>
 
-So remember we call `cudaMalloc(&d_activations, bytes_activations);` where bytes_activations is 12 bytes (3 values * 4 bytes per float). But we don't get the 12 bytes we requested. Instead we get 512 bytes ! Because that's the chunk size which cudaMalloc works with ! 
+So remember we call `cudaMalloc(&d_activations, bytes_activations);` where bytes_activations is 12 bytes (3 values * 4 bytes per float). But we don't get the 12 bytes we requested. Instead, we get 512 bytes ! Because that's the chunk size which cudaMalloc works with ! 
 This has the side effect that the memory address of **d_z** is 512 bytes away from **d_activations**. 
 If I had only used 100 Threads I couldn't have shown the bug to you. So we need at least 129 threads to start overriding z_values ! 
 
@@ -116,7 +116,7 @@ if (id < nr_output_neurons)
 }
 ```
 
-This are the results:
+This is the result:
 
 
 ![bugcomparison](https://user-images.githubusercontent.com/16619270/230922675-a8c16d17-51c4-416c-a97a-fa004827d155.png)
@@ -128,14 +128,12 @@ The reason is that when we have a neural network with many layers, each layer mi
 
 ## 3. Implementing Cuda Kernel with multiple Layers
 
-Alright so next thing to do is to implement the CUDA Kernel so it can handle multiple layers.
+Alright so next thing to do is to implement the CUDA Kernel, so it can handle multiple layers.
 First we are going to define a shape variable (integer array) which tells us the shape of the neural network.
 
 For example: `shape = [8, 6, 4, 1]` would look like this.
 
-![](shape.png)
-
-We pass this shape to the cuda kernel as well as the shape_length so we know the length of the shape array.
+We pass this shape to the cuda kernel as well as the shape_length, so we know the length of the shape array.
 
 ```c
 __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
@@ -176,7 +174,7 @@ If we want to get the weights of the 2nd hidden Layer we need to start with an i
 
 So from Index 48 until Index 53 are all the incoming weights for neurons nr 1 of the 2nd hidden layer.
 From Index 54 to 59 are all the incoming weights for neuron nr 2 of the 2nd hidden layer.
-From Index 60 to 65 are all the incoming weights for neuron nr 3 of the the 2nd hidden layer.
+From Index 60 to 65 are all the incoming weights for neuron nr 3 of the 2nd hidden layer.
 And finally from 66 to 71 , the incoming weights for neuron nr 4.
 
 On the bottom of the image I wrote out the formula for how to calculate the index for the 2nd Hidden Layer and the output layer.
@@ -186,18 +184,18 @@ On the bottom of the image I wrote out the formula for how to calculate the inde
 
 **Biases Z values**
 
-This is the layout for the biases. The size of the array should be the size of all the biases. So for our neural network this would be 6+4+1 (8 is excluded because the input layer doesn't have biases. Coincidentally this is also the layout for the z_values. Because the number of biases matches the number of z_values. 
+This is the layout for the biases. The size of the array should be the size of all the biases. So for our neural network this would be 6+4+1 (8 is excluded because the input layer doesn't have biases). Coincidentally this is also the layout for the z_values. Because the number of biases matches the number of z_values. 
 
 ![](readme_images/bias_z_layout.png)
 
 **Activations**
 
-Alright so the only thing missing now is to define the memory layout for the activation values. Warning this layout is a little bit different compared to the z_values since we are also going to store the inputs in this array (so we can get rid of x_inputs in the function signature).
+Alright so the only thing missing now is to define the memory layout for the activation values. Warning this layout is a little different compared to the z_values since we are also going to store the inputs in this array (so we can get rid of x_inputs in the function signature).
 
 ![](readme_images/activations_layout.png)
 
 
-Now we can finish the CUDA Kernel. We introduce some offset variables to help us to index into the correct layers. `int layer_offset_z_b, layer_offset_weights, layer_offset_activations. We use this to update the z_value and activation value calculations (see code below). And at the end of each layer we update the offset variables we just introduced. IMPORTANT: We need to update this offset variables **outside of the Memory Guard** otherwise different threads will have different offsets.
+Now we can finish the CUDA Kernel. We introduce some offset variables to help us to index into the correct layers. `int layer_offset_z_b, layer_offset_weights, layer_offset_activations. We use this to update the z_value and activation value calculations (see code below). And at the end of each layer we update the offset variables we just introduced. IMPORTANT: We need to update this offset variables **outside the Memory Guard** otherwise different threads will have different offsets.
 
 ```c
 __global__ void linear_layer_and_activation(float *weight_matrix, float *biases, float *x_inputs, 
@@ -245,7 +243,7 @@ __global__ void linear_layer_and_activation(float *weight_matrix, float *biases,
 }
 ```
 
-Ok one additional thing you might have observed in the code below is a call to a function called `__synchtreads()` . This is the final piece to making our kernel work. Syncthreads makes sure all the threads which are executing code will meet up at this point an be synchronized at this specific point. The reason why this part is crucial in our code is because otherwise threads which don't need to execute the code for computing the activations, would go on and get into the next part of the for loop and start computing activations for the next layer, while the activations of the previous layer haven't been computed yet.
+Ok one additional thing you might have observed in the code below is a call to a function called `__synchtreads()` . This is the final piece to making our kernel work. Syncthreads makes sure all the threads which are executing code will meet up at this point and be synchronized at this specific point. The reason why this part is crucial in our code is because otherwise threads which don't need to execute the code for computing the activations, would go on and get into the next part of the for loop and start computing activations for the next layer, while the activations of the previous layer haven't been computed yet.
 
 ## 4. Changing Main (Preparing for the Kernel Launch)
 
@@ -298,7 +296,7 @@ float *host_z = new float [nr_biases] {0.0f};
 ## 4.1 Request GPU Memory for the shape
 
 First we calculate the numbers of bytes needed because we are going to need this for the cudaMalloc call.
-Now we also need to transfer the shape array to the GPU memory via cudaMalloc. And refactor the cuda a little bit
+Now we also need to transfer the shape array to the GPU memory via cudaMalloc.
 
 ```c
 
@@ -331,7 +329,7 @@ cudaMemcpy(d_shape, shape, bytes_shape, cudaMemcpyHostToDevice);
 
 
 ## 5. Launching the Kernel - Changing the parameters
-Since we changed the function signature of our kernel we also need to change the parameters when call the kernel. We removed the d_inputs parameter, nr_output_neurons and and nr_output_neurons variable and replace them by the shape and shape length variables. 
+Since we changed the function signature of our kernel we also need to change the parameters when call the kernel. We removed the d_inputs parameter, nr_output_neurons and nr_output_neurons variable and replace them by the shape and shape length variables. 
 
 ```c
 // Call the kernel which calculates the activations.
@@ -400,7 +398,7 @@ Activations 3. hidden layer
 
 ## 7. Verification
 
-The results can be verfied with the follwoing python code:
+The results can be verified with the following python code:
 ```python
 import numpy
 import numpy as np
@@ -417,8 +415,8 @@ activations = [activations[:8].reshape(-1, 1), activations[8:14].reshape(-1, 1),
 weights = [weights[:48].reshape(6, 8), weights[48:72].reshape(4, 6), weights[72:].reshape(1, 4)]
 biases = [biases[:6].reshape(-1, 1), biases[6:10].reshape(-1, 1), biases[10:].reshape(-1, 1)]
 
-def sig(z):
-    return 1.0/(1.0+numpy.exp(-z))
+def sig(z_val):
+    return 1.0/(1.0+numpy.exp(-z_val))
 
 z_values = []
 for layer_index in range(3):
