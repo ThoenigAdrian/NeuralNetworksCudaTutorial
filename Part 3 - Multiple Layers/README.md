@@ -128,7 +128,7 @@ The reason is that when we have a neural network with many layers, each layer mi
 
 ## 3. Implementing Cuda Kernel with multiple Layers
 
-Alright so next thing to do is to implement to CUDA Kernel so it can handle multiple layers.
+Alright so next thing to do is to implement the CUDA Kernel so it can handle multiple layers.
 First we are going to define a shape variable (integer array) which tells us the shape of the neural network.
 
 For example: `shape = [8, 6, 4, 1]` would look like this.
