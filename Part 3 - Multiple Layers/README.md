@@ -169,7 +169,7 @@ We are going to use the following memory Layout
 
 This is the layout for the weights. ![](readme_images/weights_memory_layout.png)
 
-We start with the incoming weights which belong to the neurons in the 1st hidden layer. All the incoming weights which belong to a certain neuron will be next to each other in memory. 
+We start at index 0 with the incoming weights which belong to the neurons of the 1st hidden layer. All the incoming weights which belong to a certain neuron will be next to each other in memory. 
 
 If we want to get the weights of the 2nd hidden Layer we need to start with an index of 48. This is because 8 * 6 = 48.
 
