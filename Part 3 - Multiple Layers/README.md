@@ -168,6 +168,24 @@ We are going to use the following memory Layout
 **Weights**
 
 This is the layout for the weights. ![](readme_images/weights_memory_layout.png)
+We start with the incoming weights which belong to the neurons in the 1st hidden layer. All the incoming weights which belong to a certain neuron will be next to each other in memory. 
+
+Show image
+If we want to get the weights of the 2nd hidden Layer we need to start with an index of 48. This is because 8 * 6 = 48.
+So from Index 48 until Index 53 are all the incoming weights for neurons nr 1 of the second hidden layer.
+From Index 54 to 59 are all the incoming weights for neuron nr 2 of the second hidden layer.
+From Index 60 to 65 are all the incoming weights for neuron nr 3 of the second hidden layer.
+And finally from 66 to 71 , the incoming weights for neuron nr 4.
+
+On the bottom I wrote out the formula for how to calculate the index for the 2nd Hidden Layer and the 3rd hidden layer.
+
+Next we take care of  biases array. The size of the array should be the size of all the biases. So for our neural network this would be 6+4+1. Which adds up to 14 in total
+Add drawing for biases
+Now we also need the Z_values 
+Add drawing for z values
+Activation values
+Add drawing for activations
+Alright so the only thing missing now is to define the memory layout for the activation values. Warning this layout is a little bit different compare to the z_values since we are also going to store the inputs in this array. But other than that it’s pretty much the same.
 
 
 **Biases Z values**
@@ -318,8 +336,7 @@ cudaMemcpy(d_shape, shape, bytes_shape, cudaMemcpyHostToDevice);
 
 
 ## 5. Launching the Kernel - Changing the parameters
-
-Alright that’s all the code we need for the kernel. We now have a kernel which can compute all the z values and activations. The only thing left to do now is to call the kernel. This can be done via the triple chevron launch syntax. 
+Since we changed the function signature of our kernel we also need to change the parameters when call the kernel. We removed the d_inputs parameter, nr_output_neurons and and nr_output_neurons variable and replace them by the shape and shape length variables. 
 
 ```c
 // Call the kernel which calculates the activations.
@@ -327,7 +344,8 @@ Alright that’s all the code we need for the kernel. We now have a kernel which
 int nr_threads = *std::max_element(shape + 1, shape + shape_length);
 linear_layer_and_activation << <1 , nr_threads >> > (d_weights, d_biases, d_inputs, d_z, d_activations, d_shape, shape_length);
 ```
-
+One additional thing I added is to set the `nr_threads` varialbe to the maximum number of neurons of all the layers. 
+This part is basically just there to avoid wasting threads. We could also launch the kernel with 1024 threads(depending on your GPU) but then most of the threads wouldn't be doing any work.
 
 ## 6. Evaluating Results
 ```c
