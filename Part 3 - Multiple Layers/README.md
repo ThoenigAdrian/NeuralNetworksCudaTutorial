@@ -339,7 +339,7 @@ Since we changed the function signature of our kernel we also need to change the
 int nr_threads = *std::max_element(shape + 1, shape + shape_length);
 linear_layer_and_activation << <1 , nr_threads >> > (d_weights, d_biases, d_inputs, d_z, d_activations, d_shape, shape_length);
 ```
-One additional thing I added is to set the `nr_threads` varialbe to the maximum number of neurons of all the layers. 
+One additional thing I added is to set the `nr_threads` variable to the maximum number of neurons of all the layers. 
 This part is basically just there to avoid wasting threads. We could also launch the kernel with 1024 threads(depending on your GPU) but then most of the threads wouldn't be doing any work.
 
 ## 6. Evaluating Results
