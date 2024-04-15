@@ -73,8 +73,6 @@ So the thread block dimensions in the xaxis will be 6.
 
 The number of threads in the y dimension is going to be equal to the number of inputs.
 
-https://stackoverflow.com/questions/12078080/max-number-of-threads-which-can-be-initiated-in-a-single-cuda-kernel
-
 That’s it for the Kernal Call now let’s move on to the Data Structures.
 
 
