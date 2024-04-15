@@ -25,3 +25,6 @@ In this example image we would have `3` inputs and `6` hidden neurons therefore 
 Alright let’s have a closer look at what each individual thread will do. We are going to use the following example to visualize everything. ![SetupExampleThreadingStrat](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/d19894a6-10e8-4d47-9840-980df95713e9)
 
 We use a simple neural network with 4 input neurons and 3 output neurons. The inpput matrix will consist of 3 inputs. This results in  `9` total threads. `3 (nr_inputs) * 3( nr_neurons) = 9 (total threads)`   Now let’s have a look at what each individual thread does.
+
+![detailedthreadingstrat](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/63d2a027-c9ca-4de3-8967-59ed3ac1e10b)
+
