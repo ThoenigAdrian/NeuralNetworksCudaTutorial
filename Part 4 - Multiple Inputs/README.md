@@ -34,9 +34,9 @@ We use a simple neural network with 4 input neurons and 3 output neurons. The in
 
 **Thread 2** tthreadIdx.x=2, threadIdx.y=0)akes care of the final output neuron.
 
-Next we move on to thread 3 – 5 . This 3 threads will take care of the 2nd input. The coordinate for thread 3 are x=0 and y=1 So it takes of the 2nd input and the first output neuron
+Next we move on to thread 3 – 5 . This 3 threads will take care of the 2nd input. 
 
-**Thread 3** (threadIdx.x=0, threadIdx.y=1) will take the `2nd` input 
+**Thread 3** (threadIdx.x=0, threadIdx.y=1) will take the `2nd` input and compute the activations for the first output neuron
 
 **Thread 4** (threadIdx.x=1, threadIdx.y=1) also takes the `2nd` input but takes care of the second ouput neuron.
 
