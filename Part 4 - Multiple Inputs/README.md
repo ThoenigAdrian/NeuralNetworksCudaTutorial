@@ -73,6 +73,8 @@ So the thread block dimensions in the xaxis will be 6.
 
 The number of threads in the y dimension is going to be equal to the number of inputs.
 
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/d24eac79-e749-48e2-8fd7-5275915dc564)
+
 That’s it for the Kernal Call now let’s move on to the Data Structures.
 
 
