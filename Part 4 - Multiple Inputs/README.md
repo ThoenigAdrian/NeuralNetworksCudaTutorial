@@ -20,6 +20,8 @@ The x-coordinate of the thread (threadIdx.x) will decide for what neuron we will
 In this example image we would have 3 inputs and 6 hidden neurons therefore resulting in 18 cuda threads. 
 nr_threads = nr_inputs * nr_hidden_neurons (side note: of course the number of hidden neurons is different for every layer in our code we are just setting the number of hidden neurons to the max of all layers , to make sure we have enough threads. )
 
+### Details
+
 Alright let’s have a closer look at what each individual thread will do. We are going to use the following example to visualize everything. ![SetupExampleThreadingStrat](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/d19894a6-10e8-4d47-9840-980df95713e9)
 
-We use a simple neural network with 4 input neurons and 3 output neurons. The inp0ut matrix will consist of 3 inputs. therefore we will need 9 threads. 3 threads in the y – dimension 1 for every input, and 3 threads in the  x – dimension one for every output neuron.  Now let’s have a look at what every single thread does.
+We use a simple neural network with 4 input neurons and 3 output neurons. The inpput matrix will consist of 3 inputs. This results in  9 total threads. 3 (nr_inputs) * 3( nr_neurons)   Now let’s have a look at what each individual thread does.
