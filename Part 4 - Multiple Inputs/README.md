@@ -50,6 +50,7 @@ The structure of the weights and biases stay the same. We need to change the act
 
 This is the current structure we have now. Let’s change this structure so we can have multiple activation vectors and z_value vectors.
 
+CLICK IMAGE TO ENLARGE
 ![datastructures](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/1b9235ad-5cba-4dca-a081-755a0928e056)
 
 
