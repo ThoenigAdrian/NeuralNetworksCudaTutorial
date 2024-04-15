@@ -28,8 +28,16 @@ We use a simple neural network with 4 input neurons and 3 output neurons. The in
 
 ![detailedthreadingstrat](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/63d2a027-c9ca-4de3-8967-59ed3ac1e10b)
 
-**Thread 0** (threadIdx.x=0 threadIdx.y=0) will take the first input and compute the activations for the first output neuron. 
+**Thread 0** (threadIdx.x=0, threadIdx.y=0) will take the first input and compute the activations for the first output neuron. 
 
-**Thread 1** will also take the first input but will take care of the next output neuron. 
+**Thread 1** threadIdx.x=1, threadIdx.y=0) will also take the first input but will take care of the second output neuron. 
 
-**Thread 2** takes care of the final output neuron.
+**Thread 2** tthreadIdx.x=2, threadIdx.y=0)akes care of the final output neuron.
+
+Next we move on to thread 3 – 5 . This 3 threads will take care of the 2nd input. The coordinate for thread 3 are x=0 and y=1 So it takes of the 2nd input and the first output neuron
+
+**Thread 3** (threadIdx.x=0, threadIdx.y=1) will take the `2nd` input 
+
+**Thread 4** (threadIdx.x=1, threadIdx.y=1) also takes the `2nd` input but takes care of the second ouput neuron.
+
+I assume you can see the pattern here ;) . 
