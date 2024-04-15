@@ -61,6 +61,7 @@ The order of the layers in the memory stays the same. But each layer section now
 There are 2 changes we need to do to the code in the main function. 
 1.	We need to change how we call the kernel
 2.	We need to change the data structures for activations, and z values to be compatible with multiple inputs.
+
 So, for calling the kernel the main thing which changes is that now we need more threads.
 We need one thread per input and neuron. So, if we have 3 Inputs and 6 Neurons we need 18 Threads. We can specify this via a 2-dimensional tuple. Which specifies the dimensions of the threadBlock we are going to use.
 The number of threads in the x dimension is going to be equal to the number of neurons the largest layer has:
