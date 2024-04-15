@@ -16,3 +16,10 @@ In CUDA we can have something which is called a Thread Block. It's basically jus
 ![threadblockvsthreadlist](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/9ac95e3c-a2c7-4bef-b75a-4b77008ac4a2)
 
 The x-coordinate of the thread (threadIdx.x) will decide for what neuron we will compute the activation and the y-coordinate (threadIdx.y) will tell us which input we are processing.
+
+In this example image we would have 3 inputs and 6 hidden neurons therefore resulting in 18 cuda threads. 
+nr_threads = nr_inputs * nr_hidden_neurons (side note: of course the number of hidden neurons is different for every layer in our code we are just setting the number of hidden neurons to the max of all layers , to make sure we have enough threads. )
+
+Alright let’s have a closer look at what each individual thread will do. We are going to use the following example to visualize everything. ![SetupExampleThreadingStrat](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/d19894a6-10e8-4d47-9840-980df95713e9)
+
+We use a simple neural network with 4 input neurons and 3 output neurons. The inp0ut matrix will consist of 3 inputs. therefore we will need 9 threads. 3 threads in the y – dimension 1 for every input, and 3 threads in the  x – dimension one for every output neuron.  Now let’s have a look at what every single thread does.
