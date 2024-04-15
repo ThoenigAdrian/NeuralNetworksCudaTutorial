@@ -28,3 +28,8 @@ We use a simple neural network with 4 input neurons and 3 output neurons. The in
 
 ![detailedthreadingstrat](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/63d2a027-c9ca-4de3-8967-59ed3ac1e10b)
 
+**Thread 0** with the x coordinate zero and the y coordinate zero will take the first input and compute the activations for the first output neuron. 
+
+**Thread 1** will also take the first input but will take care of the next output neuron. 
+
+**Thread 2** takes care of the final output neuron.
