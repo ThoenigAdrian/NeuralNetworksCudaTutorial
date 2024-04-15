@@ -41,3 +41,19 @@ Next we move on to thread 3 – 5 . This 3 threads will take care of the 2nd inp
 **Thread 4** (threadIdx.x=1, threadIdx.y=1) also takes the `2nd` input but takes care of the second ouput neuron.
 
 I assume you can see the pattern here ;) . 
+
+## Data Structures
+
+
+Now that we want to handle multiple inputs we need to change our Memory Structure a little bit.
+The structure of the weights and biases stay the same. We need to change the activations array and the z values array to accommodate multiple inputs.
+
+This is the current structure we have now. Let’s change this structure so we can have multiple activation vectors and z_value vectors.
+
+![datastructures](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/1b9235ad-5cba-4dca-a081-755a0928e056)
+
+
+Take a look at the new memory structure.
+
+
+The order of the layers in the memory stays the same. But each layer section now holds multiple inputs instead of just one. 
