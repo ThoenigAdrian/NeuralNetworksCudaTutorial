@@ -161,3 +161,10 @@ Let's move on to the z values array. Here we encounter a similar situation previ
 
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/6caf19d0-2b7c-45b0-a0d3-18fede1dcf78)
 
+The final thing left to do is to adapt the printing to the new data structure so we can see what values our kernel computes.
+
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/4cc9f343-d4c6-48a4-a39a-ebb0579a9624)
+
+
+### Kernel Changes - More to be done here.....
+
