@@ -81,6 +81,9 @@ The number of threads in the y dimension is going to be equal to the number of i
 
 That’s it for the Kernal Call now let’s move on to the Data Structures.
 
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/f5a9619a-8aad-4488-8adc-78251b363343)
+
+
 ### Data Structures
 
 Now let’s have a look at a side by side comparison between the	code of the previous video and our current code. First we introduce a variable which defines the number of inputs. 
@@ -154,4 +157,5 @@ Another thing we do for the activations array is to initialize it with enough va
 
 Let's move on to the z values array. Here we encounter a similar situation previously the number of z values was equivalent to the number biases but now we compute a bunch of z values for every intput. So we also need to multiply with the number of inputs here.
 
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/6caf19d0-2b7c-45b0-a0d3-18fede1dcf78)
 
