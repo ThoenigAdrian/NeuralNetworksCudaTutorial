@@ -79,7 +79,7 @@ The number of threads in the y dimension is going to be equal to the number of i
 
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/d24eac79-e749-48e2-8fd7-5275915dc564)
 
-Here's a diff comparing old code vs. the new code
+Here's a diff comparing old code vs. the new code:
 
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/f5a9619a-8aad-4488-8adc-78251b363343)
 
