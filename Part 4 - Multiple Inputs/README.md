@@ -58,6 +58,7 @@ The order of the layers in the memory stays the same. But each layer section now
 
 ## Main
 
+### Kernel Call
 There are 2 changes we need to do to the code in the main function. 
 1.	We need to change how we call the kernel
 2.	We need to change the data structures for activations, and z values to be compatible with multiple inputs.
@@ -80,7 +81,7 @@ The number of threads in the y dimension is going to be equal to the number of i
 
 That’s it for the Kernal Call now let’s move on to the Data Structures.
 
-## NOT FINISHED YET MORE TO BE DONE HERE 
+### Data Structures
 
 Now let’s have a look at a side by side comparison between the	code of the previous video and our current code. First we introduce a variable which defines the number of inputs. 
 
