@@ -117,10 +117,28 @@ int main()
 	float *host_biases = new float [nr_biases] {-0.31f, 0.83f, 0.23f, 0.76f, -0.22f, -0.20f, 0.19f, 0.41f, 0.20f, 0.12f, -0.67f};
 ```
 
-
 Next we need to change the size of the activations array previously the number of activations was the same as the number of neurons but now we need one set of activations for every input. So we need to multiply the number of neurons with the number of inputs.
 
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/e7821191-2ff5-4661-b040-69c4268f4f25)
+```
+	nr_biases = nr_neurons - shape[0];
+	float *host_biases = new float [nr_biases] {-0.31f, 0.83f, 0.23f, 0.76f, -0.22f, -0.20f, 0.19f, 0.41f, 0.20f, 0.12f, -0.67f};
+	
+	// The first 8 values are our inputs rest of the array can be initialized with 0.0
+	int nr_activations = nr_neurons * NR_INPUTS;
+	float *host_activations = new float [nr_activations] {0.38f, 0.12f, 1.13f, 1.20f, 0.19f, -0.38f, -0.64f, 0.42f, 0.76f, -0.36f, -0.23f, -0.89f, -0.01f, -0.08f, -0.26f, -0.13f, -0.55f, -0.42f, -0.39f, -0.83f, 0.87f, 0.44f, -0.45f, -0.52f};
+	
+	// Initialize z Matrix
+	int nr_z = nr_biases * NR_INPUTS;
+	float *host_z = new float [nr_z] {0.0f};
 
+
+	// Calculate the amount of memory needed so we can provide this information to cuda malloc
+	const size_t bytes_biases = nr_biases * sizeof(float);
+	const size_t bytes_z = nr_z * sizeof(float);
+	const size_t bytes_weights = nr_weights * sizeof(float);
+	const size_t bytes_activations = nr_activations * sizeof(float);
+	const size_t bytes_shape = sizeof(int) * shape_length;
+```
 Another thing we do for the activations array is to initialize it with enough values for 3 inputs so that's why the list is longer than in the previous code. 
 Let's move on to the z values array. Here we encounter a similar situation previously the number of z values was equivalent to the number biases but now we compute a bunch of z values for every intput. So we also need to multiply with the number of inputs here.
