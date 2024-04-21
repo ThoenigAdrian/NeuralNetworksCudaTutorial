@@ -68,9 +68,11 @@ We need one thread per input and neuron. So, if we have 3 Inputs and 6 Neurons w
 The number of threads in the x dimension is going to be equal to the number of neurons the largest layer has:
 
 So if we have a look at the shape of our neural network:
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/29a9d90a-db66-4527-b382-cb3c584edc9f)
+
 8,6,4,1
 We will need 6 threads because we have at most 6 neurons. 
-So the thread block dimensions in the xaxis will be 6.
+So the thread block dimensions in the x-axis will be 6.
 
 The number of threads in the y dimension is going to be equal to the number of inputs.
 
@@ -79,3 +81,43 @@ The number of threads in the y dimension is going to be equal to the number of i
 That’s it for the Kernal Call now let’s move on to the Data Structures.
 
 ## NOT FINISHED YET MORE TO BE DONE HERE 
+
+Now let’s have a look at a side by side comparison between the	code of the previous video and our current code. First we introduce a variable which defines the number of inputs. 
+
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/ee814de5-835e-43eb-a3be-e4332711c3a3)
+
+```
+int main()
+{
+	const int shape_length = 4;
+	int shape[shape_length] = { 8, 6, 4, 1 };
+	const int NR_INPUTS = 3;
+
+	// Initialize weights on CPU/RAM
+	int nr_weights = 0;
+
+	for (int shape_index = 0; shape_index < shape_length - 1; shape_index++)
+	{
+		nr_weights += shape[shape_index] * shape[shape_index + 1];
+	}
+
+	float *host_weights = new float [nr_weights] {1.62f, -0.61f, -0.53f, -1.07f, 0.87f, -2.30f, 1.74f, -0.76f, 0.32f, -0.25f, 1.46f, -2.06f, -0.32f, -0.38f, 1.13f, -1.10f, -0.17f, -0.88f, 0.04f, 0.58f, -1.10f, 1.14f, 0.90f, 0.50f, 0.90f, -0.68f, -0.12f, -0.94f, -0.27f, 0.53f, -0.69f, -0.40f, -0.69f, -0.85f, -0.67f, -0.01f, -1.12f, 0.23f, 1.66f, 0.74f, -0.19f, -0.89f, -0.75f, 1.69f, 0.05f, -0.64f, 0.19f, 2.10f, 0.12f, 0.62f, 0.30f, -0.35f, -1.14f, -0.35f, -0.21f, 0.59f, 0.84f, 0.93f, 0.29f, 0.89f, -0.75f, 1.25f, 0.51f, -0.30f, 0.49f, -0.08f, 1.13f, 1.52f, 2.19f, -1.40f, -1.44f, -0.50f, 0.16f, 0.88f, 0.32f, -2.02f};
+
+	// Initialize biases on CPU/RAM
+	int nr_neurons = 0;
+	int nr_biases = 0;
+
+	for (int shape_index = 0; shape_index < shape_length; shape_index++)
+	{
+		nr_neurons += shape[shape_index];
+	}
+
+	nr_biases = nr_neurons - shape[0];
+	float *host_biases = new float [nr_biases] {-0.31f, 0.83f, 0.23f, 0.76f, -0.22f, -0.20f, 0.19f, 0.41f, 0.20f, 0.12f, -0.67f};
+```
+
+
+Next we need to change the size of the activations array previously the number of activations was the same as the number of neurons but now we need one set of activations for every input. So we need to multiply the number of neurons with the number of inputs. Another thing we do for the activations array is to initialize it with enough values for 3 inputs so that's why the list is longer than in the previous code. 
+
+
+Let's move on to the z values array. Here we encounter a similar situation previously the number of z values was equivalent to the number biases but now we compute a bunch of z values for every intput. So we also need to multiply with the number of inputs here.
