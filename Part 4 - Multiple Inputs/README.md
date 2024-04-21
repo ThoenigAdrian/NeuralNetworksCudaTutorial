@@ -85,7 +85,7 @@ That’s it for the Kernal Call now let’s move on to the Data Structures.
 
 Now let’s have a look at a side by side comparison between the	code of the previous video and our current code. First we introduce a variable which defines the number of inputs. 
 
-![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/ee814de5-835e-43eb-a3be-e4332711c3a3){width=50%}
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/ee814de5-835e-43eb-a3be-e4332711c3a3)
 
 ```
 int main()
@@ -118,7 +118,9 @@ int main()
 ```
 
 
-Next we need to change the size of the activations array previously the number of activations was the same as the number of neurons but now we need one set of activations for every input. So we need to multiply the number of neurons with the number of inputs. Another thing we do for the activations array is to initialize it with enough values for 3 inputs so that's why the list is longer than in the previous code. 
+Next we need to change the size of the activations array previously the number of activations was the same as the number of neurons but now we need one set of activations for every input. So we need to multiply the number of neurons with the number of inputs.
 
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/e7821191-2ff5-4661-b040-69c4268f4f25)
 
+Another thing we do for the activations array is to initialize it with enough values for 3 inputs so that's why the list is longer than in the previous code. 
 Let's move on to the z values array. Here we encounter a similar situation previously the number of z values was equivalent to the number biases but now we compute a bunch of z values for every intput. So we also need to multiply with the number of inputs here.
