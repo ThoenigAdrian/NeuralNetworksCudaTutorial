@@ -111,17 +111,15 @@ That’s it for the Kernal Call now let’s move on to the Data Structures.
 
 ### Data Structures - Code
 
-Now let’s have a look at a side by side comparison between the	code of the previous video and our current code. First we introduce a variable which defines the number of inputs. 
+Now let’s have a look the difference  comparison between the code of the previous video and our current code. First we introduce a variable which defines the number of inputs. _
 
-![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/ee814de5-835e-43eb-a3be-e4332711c3a3)
-Here in text form so you can copy paste if needed:
 
-```c++
+```diff
 int main()
 {
 	const int shape_length = 4;
 	int shape[shape_length] = { 8, 6, 4, 1 };
-	const int NR_INPUTS = 3;
++	const int NR_INPUTS = 3;
 
 	// Initialize weights on CPU/RAM
 	int nr_weights = 0;
