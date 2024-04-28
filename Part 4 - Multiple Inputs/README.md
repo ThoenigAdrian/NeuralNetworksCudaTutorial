@@ -4,7 +4,7 @@ Last time we implemented the feedforward method for multiple layers. However, on
 More inputs means we need more threads so let's cover how we handle this.
 
 So let’s start with that:
-## Threading Strategy
+## 1. Threading Strategy
 
 
 Until now we just had a list of threads. 
@@ -27,7 +27,7 @@ The x-coordinate of the thread (threadIdx.x) will decide for what neuron we will
 In this example image we would have `3` inputs and `6` hidden neurons therefore resulting in `18` cuda threads. 
 `nr_threads = nr_inputs * nr_hidden_neurons` (side note: of course the number of hidden neurons is different for every layer in our code we are just setting the number of hidden neurons to the max of all layers , to make sure we have enough threads. )
 
-### Details
+### 1.1 Details
 
 Alright let’s have a closer look at what each individual thread will do. We are going to use the following example to visualize everything. ![SetupExampleThreadingStrat](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/d19894a6-10e8-4d47-9840-980df95713e9)
 
@@ -49,7 +49,7 @@ Next we move on to thread 3 – 5 . This 3 threads will take care of the 2nd inp
 
 **To summarize y coordinate decides the input nr , x coordinate the neuron nr**
 
-## Data Structures
+## 2. Data Structures
 
 
 Now that we want to handle multiple inputs we need to change our Memory Structure a little bit.
@@ -68,12 +68,17 @@ So the hierarchy from big to small:
 3. Neurons
 
 
-## Main - Code
+## 3. Code Changes
 
-### Kernel Call
+### 3.1 Main - Code
+
 There are 2 changes we need to do to the code in the main function. 
 1.	We need to change how we call the kernel
 2.	We need to change the data structures for activations, and z values to be compatible with multiple inputs.
+
+
+#### 3.1.1 Kernel Call - Code
+
 
 So, for calling the kernel the main thing which changes is that now we need more threads.
 
@@ -100,7 +105,7 @@ multiple_inputs << <1, thread_block_dimensions >> > (d_weights, d_biases, d_z, d
 That’s it for the Kernal Call now let’s move on to the Data Structures.
 
 
-### Data Structures - Code
+### 3.1.2 Data Structures - Code
 
 Now let’s have a look the difference  comparison between the code of the previous video and our current code. First we introduce a variable which defines the number of inputs. _
 
@@ -193,7 +198,7 @@ Another thing we do for the activations array is to initialize it with enough va
 
 Let's move on to the z values array. Here we encounter a similar situation previously the number of z values was equivalent to the number biases but now we compute a bunch of z values for every intput. So we also need to multiply with the number of inputs here.
 
-## Printing the result - Code 
+### 3.1.3 Printing the result - Code 
 
 The final thing left to do is to adapt the printing to the new data structure so we can see what values our kernel computes.
 
@@ -246,7 +251,7 @@ The final thing left to do is to adapt the printing to the new data structure so
 ```
 
 
-### Kernel Changes - Code
+## Kernel Changes - Code
 
 Next lets change our kernel code so it can handle multiple Inputs. 
 
