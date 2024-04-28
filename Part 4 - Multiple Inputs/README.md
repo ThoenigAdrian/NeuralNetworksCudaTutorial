@@ -274,7 +274,11 @@ Previously we could use the same offset for both arrays but now they are differe
 
 ```
 
-## Verifiying results
+## 4.1 Verifiying results
+
+Now let’s run and test our code.  We have the python code for verification. Which does the neural network forward pass with numpy. We use the exact same weights and biases as in the cuda code. And also we use the same inputs. If the CUDA code produces the same results as our Python verification program. We can be sure that our CUDA code is correct. 
+
+### 4.1.1 Python Numpy Reference Code
 
 ```python
 import numpy as np
@@ -321,8 +325,11 @@ for layer_index in range(1, 4):
 
 ```
 
+### 4.1.2 Result comparision
+
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/47f4f7db-473c-4d36-8abd-65cd2b79e367)
 
+Yes, the values are the same. So this means our CUDA implementation is correct. 
 
 ## 5. FULL DIFF
 
