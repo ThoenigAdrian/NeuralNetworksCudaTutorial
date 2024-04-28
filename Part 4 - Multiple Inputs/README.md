@@ -3,10 +3,17 @@ Last time we implemented the feedforward method for multiple layers. However, on
 
 More inputs means we need more threads so let's cover how we handle this.
 
+So let’s start with that:
 ## Threading Strategy
 
 
+Until now we just had a list of threads. 
+
 In this list of threads each thread corresponded to a specific neuron in the current layer of our neural network. 
+
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/e20fd65f-809a-4e7a-a8a6-bc42e5c04207)
+
+
 Now that we want to take care of multiple inputs, we are going to change that. In our new threading strategy, we will have one thread per neuron for every input. So, we are going to use a thread block. 
 
 What does this mean ? 
@@ -30,9 +37,9 @@ We use a simple neural network with 4 input neurons and 3 output neurons. The in
 
 **Thread 0** (threadIdx.x=0, threadIdx.y=0) will take the first input and compute the activations for the first output neuron. 
 
-**Thread 1** threadIdx.x=1, threadIdx.y=0) will also take the first input but will take care of the second output neuron. 
+**Thread 1** (threadIdx.x=1, threadIdx.y=0) will also take the first input but will take care of the second output neuron. 
 
-**Thread 2** tthreadIdx.x=2, threadIdx.y=0)akes care of the final output neuron.
+**Thread 2** (threadIdx.x=2, threadIdx.y=0)akes care of the final output neuron.
 
 Next we move on to thread 3 – 5 . This 3 threads will take care of the 2nd input. 
 
@@ -40,23 +47,28 @@ Next we move on to thread 3 – 5 . This 3 threads will take care of the 2nd inp
 
 **Thread 4** (threadIdx.x=1, threadIdx.y=1) also takes the `2nd` input but takes care of the second ouput neuron.
 
-I assume you can see the pattern here ;) . 
+**To summarize y coordinate decides the input nr , x coordinate the neuron nr**
 
 ## Data Structures
 
 
 Now that we want to handle multiple inputs we need to change our Memory Structure a little bit.
-The structure of the weights and biases stay the same. We need to change the activations array and the z values array to accommodate multiple inputs.
+We need to change the activations array and the z values array to accommodate multiple inputs.
 Here are the changes we are going to make to the data structure.
 
-CLICK IMAGE TO ENLARGE
+**CLICK IMAGE TO ENLARGE**
 ![datastructures](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/1b9235ad-5cba-4dca-a081-755a0928e056)
-
-
 
 The order of the layers in the memory stays the same. But each layer section now holds multiple inputs instead of just one. 
 
-## Main
+So the hierarchy from big to small:
+
+1. Layers
+2. Inputs
+3. Neurons
+
+
+## Main - Code
 
 ### Kernel Call
 There are 2 changes we need to do to the code in the main function. 
@@ -71,27 +83,32 @@ The number of threads in the x dimension is going to be equal to the number of n
 So if we have a look at the shape of our neural network:
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/29a9d90a-db66-4527-b382-cb3c584edc9f)
 
-8,6,4,1
-We will need 6 threads because we have at most 6 neurons. 
-So the thread block dimensions in the x-axis will be 6.
+`const inst NR_INPUTS = 3;`
+`shape = [8,6,4,1]`
 
-The number of threads in the y dimension is going to be equal to the number of inputs.
+
+We will need 6 threads in the x-dimension because we have at most 6 neurons. 
+The number of threads in the y dimension is going to be equal to the number of inputs in this code i just set it to 3.
+
+```
+	// Call cuda kernel
+	int nr_threads_x_dimension = *std::max_element(shape + 1, shape + shape_length);
+	dim3 thread_block_dimensions(nr_threads_x_dimension, NR_INPUTS);
+	multiple_inputs << <1, thread_block_dimensions >> > (d_weights, d_biases, d_z, d_activations, d_shape, shape_length);
+```
 
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/d24eac79-e749-48e2-8fd7-5275915dc564)
 
-Here's a diff comparing old code vs. the new code:
-
-![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/f5a9619a-8aad-4488-8adc-78251b363343)
 
 That’s it for the Kernal Call now let’s move on to the Data Structures.
 
 
-### Data Structures
+### Data Structures - Code
 
 Now let’s have a look at a side by side comparison between the	code of the previous video and our current code. First we introduce a variable which defines the number of inputs. 
 
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/ee814de5-835e-43eb-a3be-e4332711c3a3)
-
+Here in text form so you can copy paste if needed:
 ```
 int main()
 {
@@ -122,7 +139,7 @@ int main()
 	float *host_biases = new float [nr_biases] {-0.31f, 0.83f, 0.23f, 0.76f, -0.22f, -0.20f, 0.19f, 0.41f, 0.20f, 0.12f, -0.67f};
 ```
 
-Next we need to change the size of the activations array previously the number of activations was the same as the number of neurons but now we need one set of activations for every input. So we need to multiply the number of neurons with the number of inputs.
+Next we need to change the size of the activations array. Previously the number of activations was the same as the number of neurons but now we need one set of activations for every input. So we need to multiply the number of neurons with the number of inputs.
 
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/e7821191-2ff5-4661-b040-69c4268f4f25)
 ```
@@ -166,5 +183,7 @@ The final thing left to do is to adapt the printing to the new data structure so
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/4cc9f343-d4c6-48a4-a39a-ebb0579a9624)
 
 
-### Kernel Changes - More to be done here.....
+### Kernel Changes - Code
+
+
 
