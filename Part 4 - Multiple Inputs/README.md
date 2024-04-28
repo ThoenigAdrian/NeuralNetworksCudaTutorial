@@ -90,7 +90,7 @@ So if we have a look at the shape of our neural network:
 We will need 6 threads in the x-dimension because we have at most 6 neurons. 
 The number of threads in the y dimension is going to be equal to the number of inputs in this code i just set it to 3.
 
-```
+```c++
 	// Call cuda kernel
 	int nr_threads_x_dimension = *std::max_element(shape + 1, shape + shape_length);
 	dim3 thread_block_dimensions(nr_threads_x_dimension, NR_INPUTS);
@@ -109,7 +109,8 @@ Now let’s have a look at a side by side comparison between the	code of the pre
 
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/ee814de5-835e-43eb-a3be-e4332711c3a3)
 Here in text form so you can copy paste if needed:
-```
+
+```c++
 int main()
 {
 	const int shape_length = 4;
@@ -142,7 +143,7 @@ int main()
 Next we need to change the size of the activations array. Previously the number of activations was the same as the number of neurons but now we need one set of activations for every input. So we need to multiply the number of neurons with the number of inputs.
 
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/e7821191-2ff5-4661-b040-69c4268f4f25)
-```
+```c++
 	nr_biases = nr_neurons - shape[0];
 	float *host_biases = new float [nr_biases] {-0.31f, 0.83f, 0.23f, 0.76f, -0.22f, -0.20f, 0.19f, 0.41f, 0.20f, 0.12f, -0.67f};
 	
@@ -163,7 +164,7 @@ Next we need to change the size of the activations array. Previously the number 
 	const size_t bytes_shape = sizeof(int) * shape_length;
 ```
 Another thing we do for the activations array is to initialize it with enough values for 3 inputs so that's why the list is longer than in the previous code. 
-```
+```c++
 	
 	// The first 8 values are our inputs rest of the array can be initialized with 0.0
 	int nr_activations = nr_neurons * NR_INPUTS;
