@@ -106,7 +106,7 @@ multiple_inputs << <1, thread_block_dimensions >> > (d_weights, d_biases, d_z, d
 That’s it for the Kernal Call now let’s move on to the Data Structures.
 
 
-### 3.1.2 Data Structures - Code
+#### 3.1.2 Data Structures - Code
 
 Now let’s have a look the difference  comparison between the code of the previous video and our current code. First we introduce a variable which defines the number of inputs. _
 
@@ -199,7 +199,7 @@ Another thing we do for the activations array is to initialize it with enough va
 
 Let's move on to the z values array. Here we encounter a similar situation previously the number of z values was equivalent to the number biases but now we compute a bunch of z values for every intput. So we also need to multiply with the number of inputs here.
 
-### 3.1.3 Printing the result - Code 
+#### 3.1.3 Printing the result - Code 
 
 The final thing left to do is to adapt the printing to the new data structure so we can see what values our kernel computes.
 
@@ -252,7 +252,7 @@ The final thing left to do is to adapt the printing to the new data structure so
 ```
 
 
-## Kernel Changes - Code
+### 3.2 Kernel Changes - Code
 
 Next lets change our kernel code so it can handle multiple Inputs. 
 
@@ -277,7 +277,7 @@ Previously we could use the same offset for both arrays but now they are differe
 
 
 
-# FULL DIFF
+## 4. FULL DIFF
 
 ```diff
 --- a/Part 3 - Multiple Layers/kernel.cu
