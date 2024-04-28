@@ -271,8 +271,42 @@ Previously we could use the same offset for both arrays but now they are differe
 -       int layer_offset_z_b = 0;
 +       int layer_offset_z = 0;
 +       int layer_offset_b = 0;
-
 ```
+
+Also for convenience we will add a offset for the activations, which will be fed into the current layer. And another offset for the activations the current layer will produce.
+
+```diff
+-       int layer_offset_activations = 0;
++       int layer_offset_activations_input_layer = 0;
++       int layer_offset_activations_current_layer = shape[0] * blockDim.y;
+```
+
+This variables only take care of indexing into the correct layer but they don’t take care of individual inputs or neurons.
+One detail about layer_offset_activations_current_layer, we initialize it to shape[0] * blockDim.y . 
+Shape[0] is the number of input neurons , blockDim.y  refers to the number of threads in the y-Axis. 
+Which in turn refers to the number of inputs.
+[Insert Picture here of memory layout].
+
+The next change is we save the layer_size of the current layer in a variable so we can reuse it in the next few lines. 
+
+So for the computation of the weighted sum. Weights * activations. We must change the indexing for the z_values and activations. The indices for the weights stay the same since they are input independent. 
+For the z_values we add threadIdx.y * layer_size. Where threadIdx.y to the input the current thread has to take care off. And we multiply it with the layer_size. 
+[Insert Pic]
+Here is a small animation which explains the indexing all the threads with threadyId.y = 0 will take care of the first input because 0 * 6 = 0 which is the beginning of the array. The threads where the threadIdx.y variable = 1 will take care of the second input. Now when we move on to the next layer in  the neural network. We will have layer_offset_z point to the z values of the next layer. Apart from the offset pointing moving us into the correct layer the indexing logic stays the same. The threadIdx.y variable will help to point us towards the correct input. With the same formula threadIdx * layer size, obviously the layer size is now different since we have 4 neurons instead of 6,  like in the first layer.
+
+For the activation_values which represent the inputs to the current layer we add threadIdx.y * nr_inputs_to_this_layer to the index. 1
+Just as an example visualization let's consider the threads where threadIdx.y = 1 this threads will compute the weighted sums and activations for input number 2. To compute the weighted sum this threads, have to index into input number two of the input layer. For the first iteration the layer offset will be zero the product of threadIdx.Y * number input to this layer helps us to point into the correct input inside the layer.  The inner for Loop iterates over all the values of the input vector so it gives us all the values from 0 to 8 for the neuron number. This indexing scheme therefore allows us to get the correct inputs for each output. 
+To finish the z_value computation we also need to add the bias. The indexing for the z_value follows the same logic as in the line above. The indexing into the bias array is the same as in the previous video.  
+
+Alright so the last step is to compute the sigmoid function.
+So the indexing logic for the z_values stays the same as in the code above. And for the activations it’s very similar too. 
+The difference is just that we use the activations_current_layer_offset variable instead of the layer_offset_z variable.
+That’s it for the computation. At the end we update all our layer_offset variables.
+Basically we just change the all layer_offsets so they point one layer further. 
+We do this for the weights, biases, z_values , and activations offsets.
+You can see this illustrated in this image.
+That’s it for the CUDA Kernel. 
+
 
 ## 4.1 Verifiying results
 
