@@ -321,6 +321,9 @@ for layer_index in range(1, 4):
 
 ```
 
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/47f4f7db-473c-4d36-8abd-65cd2b79e367)
+
+
 ## 5. FULL DIFF
 
 ```diff
