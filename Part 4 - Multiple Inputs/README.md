@@ -83,27 +83,18 @@ The number of threads in the x dimension is going to be equal to the number of n
 So if we have a look at the shape of our neural network:
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/29a9d90a-db66-4527-b382-cb3c584edc9f)
 
-`const inst NR_INPUTS = 3;`
 `shape = [8,6,4,1]`
-
+`const inst NR_INPUTS = 3;`
 
 We will need 6 threads in the x-dimension because we have at most 6 neurons. 
-The number of threads in the y dimension is going to be equal to the number of inputs in this code i just set it to 3.
+The number of threads in the y dimension is going to be equal to the number of inputs in this code I just set it to 3.
 
 ```c++
-	// Call cuda kernel
-	int nr_threads_x_dimension = *std::max_element(shape + 1, shape + shape_length);
-	dim3 thread_block_dimensions(nr_threads_x_dimension, NR_INPUTS);
-	multiple_inputs << <1, thread_block_dimensions >> > (d_weights, d_biases, d_z, d_activations, d_shape, shape_length);
+// Call cuda kernel
+int nr_threads_x_dimension = *std::max_element(shape + 1, shape + shape_length);
+dim3 thread_block_dimensions(nr_threads_x_dimension, NR_INPUTS);
+multiple_inputs << <1, thread_block_dimensions >> > (d_weights, d_biases, d_z, d_activations, d_shape, shape_length);
 ```
-```diff
-- text in red
-+ text in green
-! text in orange
-# text in gray
-@@ text in purple (and bold)@@
-```
-![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/d24eac79-e749-48e2-8fd7-5275915dc564)
 
 
 That’s it for the Kernal Call now let’s move on to the Data Structures.
@@ -144,29 +135,49 @@ int main()
 	float *host_biases = new float [nr_biases] {-0.31f, 0.83f, 0.23f, 0.76f, -0.22f, -0.20f, 0.19f, 0.41f, 0.20f, 0.12f, -0.67f};
 ```
 
-Next we need to change the size of the activations array. 
-Previously nr_activations = nr_neurons but now we need one set of activations for every input. So we need to multiply the number of neurons with the number of inputs.
+Next we need to change the size of the activations array and z_array. 
+Previously nr_activations = nr_neurons but now we need **one set of activations for every input**. So we need to multiply the number of neurons with the number of inputs.
 
-![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/e7821191-2ff5-4661-b040-69c4268f4f25)
-```c++
-	nr_biases = nr_neurons - shape[0];
-	float *host_biases = new float [nr_biases] {-0.31f, 0.83f, 0.23f, 0.76f, -0.22f, -0.20f, 0.19f, 0.41f, 0.20f, 0.12f, -0.67f};
-	
-	// The first 8 values are our inputs rest of the array can be initialized with 0.0
-	int nr_activations = nr_neurons * NR_INPUTS;
-	float *host_activations = new float [nr_activations] {0.38f, 0.12f, 1.13f, 1.20f, 0.19f, -0.38f, -0.64f, 0.42f, 0.76f, -0.36f, -0.23f, -0.89f, -0.01f, -0.08f, -0.26f, -0.13f, -0.55f, -0.42f, -0.39f, -0.83f, 0.87f, 0.44f, -0.45f, -0.52f};
-	
-	// Initialize z Matrix
-	int nr_z = nr_biases * NR_INPUTS;
-	float *host_z = new float [nr_z] {0.0f};
+```diff
+-       float *host_z = new float [nr_biases] {0.0f};
++       int nr_z = nr_biases * NR_INPUTS;
++       float *host_z = new float [nr_z] {0.0f};
 
 
-	// Calculate the amount of memory needed so we can provide this information to cuda malloc
-	const size_t bytes_biases = nr_biases * sizeof(float);
-	const size_t bytes_z = nr_z * sizeof(float);
-	const size_t bytes_weights = nr_weights * sizeof(float);
-	const size_t bytes_activations = nr_activations * sizeof(float);
-	const size_t bytes_shape = sizeof(int) * shape_length;
+        // Calculate the amount of memory needed so we can provide this information to cuda malloc
+        const size_t bytes_biases = nr_biases * sizeof(float);
+-       const size_t bytes_z = nr_biases * sizeof(float);
++       const size_t bytes_z = nr_z * sizeof(float);
+        const size_t bytes_weights = nr_weights * sizeof(float);
+-       const size_t bytes_activations = nr_neurons * sizeof(float);
++       const size_t bytes_activations = nr_activations * sizeof(float);
+        const size_t bytes_shape = sizeof(int) * shape_length;
+
+
+        // Allocate GPU device memory
+        float *d_biases, *d_weights, *d_activations, *d_z;
+        int *d_shape;
+        cudaMalloc(&d_biases, bytes_biases);
+        cudaMalloc(&d_weights, bytes_weights);
+        cudaMalloc(&d_activations, bytes_activations);
+        cudaMalloc(&d_z, bytes_z);
+
+
+        // Initialize z Matrix
+-       float *host_z = new float [nr_biases] {0.0f};
++       int nr_z = nr_biases * NR_INPUTS;
++       float *host_z = new float [nr_z] {0.0f};
+
+
+        // Calculate the amount of memory needed so we can provide this information to cuda malloc
+        const size_t bytes_biases = nr_biases * sizeof(float);
+-       const size_t bytes_z = nr_biases * sizeof(float);
++       const size_t bytes_z = nr_z * sizeof(float);
+        const size_t bytes_weights = nr_weights * sizeof(float);
+-       const size_t bytes_activations = nr_neurons * sizeof(float);
++       const size_t bytes_activations = nr_activations * sizeof(float);
+        const size_t bytes_shape = sizeof(int) * shape_length;
+
 ```
 Another thing we do for the activations array is to initialize it with enough values for 3 inputs so that's why the list is longer than in the previous code. 
 ```c++
@@ -182,14 +193,82 @@ Another thing we do for the activations array is to initialize it with enough va
 
 Let's move on to the z values array. Here we encounter a similar situation previously the number of z values was equivalent to the number biases but now we compute a bunch of z values for every intput. So we also need to multiply with the number of inputs here.
 
-![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/6caf19d0-2b7c-45b0-a0d3-18fede1dcf78)
+## Printing the result - Code 
 
 The final thing left to do is to adapt the printing to the new data structure so we can see what values our kernel computes.
 
-![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/4cc9f343-d4c6-48a4-a39a-ebb0579a9624)
+```diff
+        int z_offset = 0;
+        for (int shape_index = 1; shape_index < shape_length; shape_index++)
+        {
+                std::cout << "Z Values " << shape_index << ". hidden layer" << std::endl;
++
+                for (int neuron_nr = 0; neuron_nr < shape[shape_index]; neuron_nr++)
+                {
+-                       std::cout << host_z[neuron_nr + z_offset] << std::endl;
++                       std::cout << "[";
++                       for (int input = 0; input < NR_INPUTS; input++)
++                       {
++                               std::cout << host_z[z_offset + input * shape[shape_index] + neuron_nr] << ", ";
++                       }
++                       std::cout << "]" << std::endl;
++
+                }
+-               z_offset += shape[shape_index];
++               z_offset += shape[shape_index] * NR_INPUTS;
+        }
+
+-       int activations_offset = shape[0]; // Skip input values
++       int activations_offset = shape[0] * NR_INPUTS; // Skip input values
+        for (int shape_index = 1; shape_index < shape_length; shape_index++)
+        {
+                std::cout << "Activations " << shape_index << ". hidden layer" << std::endl;
+
+                for (int neuron_nr = 0; neuron_nr < shape[shape_index]; neuron_nr++)
+                {
+-                       std::cout << host_activations[neuron_nr + activations_offset] << std::endl;
++                       std::cout << "[";
++                       for (int input = 0; input < NR_INPUTS; input++)
++                       {
++                               std::cout << host_activations[activations_offset + input * shape[shape_index] + neuron_nr] << ", ";
++                       }
++                       std::cout << "]" << std::endl;
+                }
+-               activations_offset += shape[shape_index];
++               activations_offset += shape[shape_index] * NR_INPUTS;
+        }
+
+        getchar();
+
+
+        return;
+
+```
 
 
 ### Kernel Changes - Code
+
+Next lets change our kernel code so it can handle multiple Inputs. 
+
+The first change we are going to make is to have separate offsets for the z values array and the bias array. 
+Since the z values depend on the input nr while the biases don’t. 
+Therefore the z values have a different data structure.
+Previously we could use the same offset for both arrays but now they are different.
+
+
+```diff
++__global__ void multiple_inputs(float *weight_matrix, float *biases, float *z_values, float *activation_values, int* shape, int shape_length)
+ {
+        int id = threadIdx.x;
+
+        // Define offset for the current layer
+-       int layer_offset_z_b = 0;
++       int layer_offset_z = 0;
++       int layer_offset_b = 0;
+
+```
+
+
 
 
 # FULL DIFF
