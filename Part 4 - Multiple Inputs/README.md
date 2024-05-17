@@ -282,17 +282,61 @@ Also for convenience we will add a offset for the activations, which will be fed
 ```
 
 This variables only take care of indexing into the correct layer but they don’t take care of individual inputs or neurons.
-One detail about layer_offset_activations_current_layer, we initialize it to shape[0] * blockDim.y . 
+One detail about layer_offset_activations_current_layer we initialize it to `shape[0] * blockDim.y`
+
+Basically we make sure that the offset points to the correct memory see picture below.
+[Insert Picture here of memory layout].
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/31b4aec6-c708-4618-8ee0-0d69fda45fe1)
 Shape[0] is the number of input neurons , blockDim.y  refers to the number of threads in the y-Axis. 
 Which in turn refers to the number of inputs.
-[Insert Picture here of memory layout].
 
 The next change is we save the layer_size of the current layer in a variable so we can reuse it in the next few lines. 
 
+```diff
+        for (int shape_index = 0; shape_index < shape_length; shape_index++)
+        {
+                // Other threads don't execute anything to avoid out of bounds access
+                if (id < shape[shape_index + 1])
+                {
+                        int nr_inputs_to_this_layer = shape[shape_index];
++                       int layer_size = shape[shape_index + 1];
+```
+
+
 So for the computation of the weighted sum. Weights * activations. We must change the indexing for the z_values and activations. The indices for the weights stay the same since they are input independent. 
 For the z_values we add threadIdx.y * layer_size. Where threadIdx.y to the input the current thread has to take care off. And we multiply it with the layer_size. 
-[Insert Pic]
-Here is a small animation which explains the indexing all the threads with threadyId.y = 0 will take care of the first input because 0 * 6 = 0 which is the beginning of the array. The threads where the threadIdx.y variable = 1 will take care of the second input. Now when we move on to the next layer in  the neural network. We will have layer_offset_z point to the z values of the next layer. Apart from the offset pointing moving us into the correct layer the indexing logic stays the same. The threadIdx.y variable will help to point us towards the correct input. With the same formula threadIdx * layer size, obviously the layer size is now different since we have 4 neurons instead of 6,  like in the first layer.
+
+```diff
+        for (int shape_index = 0; shape_index < shape_length; shape_index++)
+        {
+                // Other threads don't execute anything to avoid out of bounds access
+                if (id < shape[shape_index + 1])
+                {
+                        int nr_inputs_to_this_layer = shape[shape_index];
++                       int layer_size = shape[shape_index + 1];
++
+                        // w*x
+                        for (int neuron_nr = 0; neuron_nr < nr_inputs_to_this_layer; neuron_nr++)
+                        {
+-                               z_values[layer_offset_z_b + id] += weight_matrix[layer_offset_weights + (nr_inputs_to_this_layer)* id + neuron_nr] *
+-                                       activation_values[layer_offset_activations + neuron_nr];
++                               z_values[layer_offset_z + threadIdx.y * layer_size + id] += weight_matrix[layer_offset_weights + (nr_inputs_to_this_layer)* id + neuron_nr] *
++                                       activation_values[layer_offset_activations_input_layer + threadIdx.y * nr_inputs_to_this_layer + neuron_nr];
+```
+
+Here are a few images to illustrate the indexing logic:  
+
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/56cf7b3e-6607-4a88-b894-e219622c36bf)
+All the threads with threadyId.y = 0 will take care of the first input because 0 * 6 = 0 which is the beginning of the array.
+
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/2acdba78-9cce-4f1a-8191-d553c39fa27e)
+The threads where the threadIdx.y variable = 1 will take care of the second input.
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/d51f6eea-9bc7-4c45-9aa1-6b353317ca10)
+Now when we move on to the next layer in  the neural network. We will have layer_offset_z point to the z values of the next layer. Apart from the offset pointing moving us into the correct layer the indexing logic stays the same. The threadIdx.y variable will help to point us towards the correct input. With the same formula threadIdx * layer size, obviously the layer size is now different since we have 4 neurons instead of 6,  like in the first layer.
+
+![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/48b1fda7-02a2-43f9-ae74-65bff12691b7)
+
+
 
 For the activation_values which represent the inputs to the current layer we add threadIdx.y * nr_inputs_to_this_layer to the index. 1
 Just as an example visualization let's consider the threads where threadIdx.y = 1 this threads will compute the weighted sums and activations for input number 2. To compute the weighted sum this threads, have to index into input number two of the input layer. For the first iteration the layer offset will be zero the product of threadIdx.Y * number input to this layer helps us to point into the correct input inside the layer.  The inner for Loop iterates over all the values of the input vector so it gives us all the values from 0 to 8 for the neuron number. This indexing scheme therefore allows us to get the correct inputs for each output. 
