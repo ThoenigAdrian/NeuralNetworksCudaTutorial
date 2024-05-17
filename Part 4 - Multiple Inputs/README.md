@@ -337,15 +337,38 @@ Now when we move on to the next layer in  the neural network. We will have layer
 ![image](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/48b1fda7-02a2-43f9-ae74-65bff12691b7)
 
 
+For the activation_values array which contains the inputs to the current layer we add `threadIdx.y * nr_inputs_to_this_layer` to the index. 
+```diff
+-                               z_values[layer_offset_z_b + id] += weight_matrix[layer_offset_weights + (nr_inputs_to_this_layer)* id + neuron_nr] *
+-                                       activation_values[layer_offset_activations + neuron_nr];
++                               z_values[layer_offset_z + threadIdx.y * layer_size + id] += weight_matrix[layer_offset_weights + (nr_inputs_to_this_layer)* id + neuron_nr] *
++                                       activation_values[layer_offset_activations_input_layer + threadIdx.y * nr_inputs_to_this_layer + neuron_nr];
+```
 
-For the activation_values which represent the inputs to the current layer we add threadIdx.y * nr_inputs_to_this_layer to the index. 1
-Just as an example visualization let's consider the threads where threadIdx.y = 1 this threads will compute the weighted sums and activations for input number 2. To compute the weighted sum this threads, have to index into input number two of the input layer. For the first iteration the layer offset will be zero the product of threadIdx.Y * number input to this layer helps us to point into the correct input inside the layer.  The inner for Loop iterates over all the values of the input vector so it gives us all the values from 0 to 8 for the neuron number. This indexing scheme therefore allows us to get the correct inputs for each output. 
 To finish the z_value computation we also need to add the bias. The indexing for the z_value follows the same logic as in the line above. The indexing into the bias array is the same as in the previous video.  
 
+```diff
+                        // w*x + b
+-                       z_values[layer_offset_z_b + id] += biases[layer_offset_z_b + id];
++                       z_values[layer_offset_z + threadIdx.y * layer_size + id] += biases[layer_offset_b + id];
+```
+
 Alright so the last step is to compute the sigmoid function.
+
+```diff
+-                       
+-                       activation_values[layer_offset_activations + shape[shape_index] + id] = 1.0 / (1.0 + exp(-z_values[layer_offset_z_b + id]));
++                       activation_values[layer_offset_activations_current_layer + layer_size * threadIdx.y + id] = 1.0 / (1.0 + exp(-z_values[layer_offset_z + layer_size * threadIdx.y + id]));
+                }
+```
 So the indexing logic for the z_values stays the same as in the code above. And for the activations it’s very similar too. 
 The difference is just that we use the activations_current_layer_offset variable instead of the layer_offset_z variable.
-That’s it for the computation. At the end we update all our layer_offset variables.
+That’s it for the computation. 
+
+
+At the end we update all our layer_offset variables.
+![layer_offset_updates](https://github.com/ThoenigAdrian/NeuralNetworksCudaTutorial/assets/16619270/6fa3be9e-0cb7-4562-a1db-e9997572c3a6)
+
 Basically we just change the all layer_offsets so they point one layer further. 
 We do this for the weights, biases, z_values , and activations offsets.
 You can see this illustrated in this image.
