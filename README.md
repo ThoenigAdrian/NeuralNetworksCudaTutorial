@@ -10,7 +10,7 @@ I am planning to cover the following topics
   2.	[Linear layer](Part%202%20-%20Linear%20Layer)   [Youtube Video](https://www.youtube.com/watch?v=W5jFOYnU6fc) 
   3.	[Forward pass with multiple layers](Part%203%20-%20Multiple%20Layers) [Youtube Video](https://youtu.be/2H3kD2HP2uo) 
   4.	[Forward pass with multiple inputs](Part%204%20-%20Multiple%20Inputs) [Youtube Video](https://www.youtube.com/watch?v=h6TsHuUKDpY) 
-  5.	Backpropagation
+  5.	[Backpropagation](Part%205%20-%20Backpropagation) [Youtube Video](https://www.youtube.com/watch?v=mzTBlIXKV5E) 
   6.	Applying gradient descent
   7.	Training loop with multiple iterations
   8.	Cost function
