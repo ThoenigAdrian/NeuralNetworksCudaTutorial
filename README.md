@@ -1,25 +1,26 @@
-# Neural Networks in Cuda from Scratch
+# Neural Networks in CUDA from Scratch
 
-This is a multi part tutorial on how to implement neural networks in CUDA. 
+This is a multi-part tutorial on how to implement neural networks in CUDA.
 
-The tutorials are available as videos on Youtube ([Youtube Playlist](https://www.youtube.com/watch?v=6StFanGtmvo&list=PLdVoL2No_-X9OK8-20KOyVRki5tBMrGGG&ab_channel=ThoenigAdrian)) or in written+summarized form here on github.
+The tutorials are available as videos on [YouTube](https://www.youtube.com/watch?v=6StFanGtmvo&list=PLdVoL2No_-X9OK8-20KOyVRki5tBMrGGG) or in written and summarized form here on GitHub.
 
+## Tutorial Series
 
-I am planning to cover the following topics
-  1.	Code: [Implementing activation layer](Part%201%20-%20Activation%20Function)  Vid: [Youtube Video](https://www.youtube.com/watch?v=6StFanGtmvo)
-  2.	Code: [Linear layer](Part%202%20-%20Linear%20Layer)   Vid: [Youtube Video](https://www.youtube.com/watch?v=W5jFOYnU6fc) 
-  3.	Code: [Forward pass with multiple layers](Part%203%20-%20Multiple%20Layers) Vid: [Youtube Video](https://youtu.be/2H3kD2HP2uo) 
-  4.	Code: [Forward pass with multiple inputs](Part%204%20-%20Multiple%20Inputs) Vid: [Youtube Video](https://www.youtube.com/watch?v=h6TsHuUKDpY) 
-  5.	Code: [Backpropagation](Part%205%20-%20Backpropagation) Vid: [Youtube Video](https://www.youtube.com/watch?v=mzTBlIXKV5E) 
-  6.	Applying gradient descent
-  7.	Training loop with multiple iterations
-  8.	Cost function
-  9.	Scaling
+| Part | Topic | Code | Video |
+|---|---|---|---|
+| 1 | Implementing Activation Function | [GitHub](Part%201%20-%20Activation%20Function) | [YouTube](https://www.youtube.com/watch?v=6StFanGtmvo) |
+| 2 | Linear Layer | [GitHub](Part%202%20-%20Linear%20Layer) | [YouTube](https://www.youtube.com/watch?v=W5jFOYnU6fc) |
+| 3 | Forward Pass with Multiple Layers | [GitHub](Part%203%20-%20Multiple%20Layers) | [YouTube](https://youtu.be/2H3kD2HP2uo) |
+| 4 | Forward Pass with Multiple Inputs | [GitHub](Part%204%20-%20Multiple%20Inputs) | [YouTube](https://www.youtube.com/watch?v=h6TsHuUKDpY) |
+| 5 | Backpropagation | [GitHub](Part%205%20-%20Backpropagation) | [YouTube](https://www.youtube.com/watch?v=mzTBlIXKV5E) |
+| 6 | Applying Gradient Descent | *Planned* | *Planned* |
+| 7 | Training Loop with Multiple Iterations | *Planned* | *Planned* |
+| 8 | Cost Function | *Planned* | *Planned* |
+| 9 | Scaling | *Planned* | *Planned* |
 
-**Setup Cuda Development Environment**
+## Setting Up a CUDA Development Environment
 
-I will not create a “How to setup CUDA Development Environment” video. Since there are already many out there. I linked some guides below:
+I will not create a dedicated "How to Set Up a CUDA Development Environment" video, since there are already many excellent tutorials available. Here are some useful guides:
 
-[Windows/Visual Studio Guide CoffeeBeforeArch](https://www.youtube.com/watch?v=cuCWbztXk4Y&t=48s&ab_channel=CoffeeBeforeArch)
-
-[Ubuntu](https://www.youtube.com/watch?v=wxNQQP9U1Bc&t=133s&ab_channel=CoffeeBeforeArch)
+- [Windows / Visual Studio – CoffeeBeforeArch](https://www.youtube.com/watch?v=cuCWbztXk4Y&t=48s)
+- [Ubuntu – CoffeeBeforeArch](https://www.youtube.com/watch?v=wxNQQP9U1Bc&t=133s)
