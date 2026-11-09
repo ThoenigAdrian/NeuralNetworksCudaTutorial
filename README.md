@@ -6,11 +6,11 @@ The tutorials are available as videos on Youtube ([Youtube Playlist](https://www
 
 
 I am planning to cover the following topics
-  1.	[Implementing activation layer](Part%201%20-%20Activation%20Function)   [Youtube Video](https://www.youtube.com/watch?v=6StFanGtmvo)
-  2.	[Linear layer](Part%202%20-%20Linear%20Layer)   [Youtube Video](https://www.youtube.com/watch?v=W5jFOYnU6fc) 
-  3.	[Forward pass with multiple layers](Part%203%20-%20Multiple%20Layers) [Youtube Video](https://youtu.be/2H3kD2HP2uo) 
-  4.	[Forward pass with multiple inputs](Part%204%20-%20Multiple%20Inputs) [Youtube Video](https://www.youtube.com/watch?v=h6TsHuUKDpY) 
-  5.	[Backpropagation](Part%205%20-%20Backpropagation) [Youtube Video](https://www.youtube.com/watch?v=mzTBlIXKV5E) 
+  1.	Code: [Implementing activation layer](Part%201%20-%20Activation%20Function)  Vid: [Youtube Video](https://www.youtube.com/watch?v=6StFanGtmvo)
+  2.	Code: [Linear layer](Part%202%20-%20Linear%20Layer)   Vid: [Youtube Video](https://www.youtube.com/watch?v=W5jFOYnU6fc) 
+  3.	Code: [Forward pass with multiple layers](Part%203%20-%20Multiple%20Layers) Vid: [Youtube Video](https://youtu.be/2H3kD2HP2uo) 
+  4.	Code: [Forward pass with multiple inputs](Part%204%20-%20Multiple%20Inputs) Vid: [Youtube Video](https://www.youtube.com/watch?v=h6TsHuUKDpY) 
+  5.	Code: [Backpropagation](Part%205%20-%20Backpropagation) Vid: [Youtube Video](https://www.youtube.com/watch?v=mzTBlIXKV5E) 
   6.	Applying gradient descent
   7.	Training loop with multiple iterations
   8.	Cost function
