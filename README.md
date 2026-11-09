@@ -2,7 +2,7 @@
 
 This is a multi-part tutorial on how to implement neural networks in CUDA.
 
-The tutorials are available as videos on [YouTube](https://www.youtube.com/watch?v=6StFanGtmvo&list=PLdVoL2No_-X9OK8-20KOyVRki5tBMrGGG) or in written and summarized form here on GitHub.
+The tutorials are available as videos on [YouTube Playlist](https://www.youtube.com/watch?v=6StFanGtmvo&list=PLdVoL2No_-X9OK8-20KOyVRki5tBMrGGG) or in written and summarized form here on GitHub.
 
 ## Tutorial Series
 
