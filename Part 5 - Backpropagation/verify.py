@@ -18,7 +18,7 @@ activations = [act.reshape(shape[0], nr_inputs, order="F"),
                np.zeros((shape[3], nr_inputs))
                ]
 
-targets = np.array([0.78, 0.64, -0.55]).reshape(shape[-1], nr_inputs)
+targets = np.array([0.78, 0.64, 0.55]).reshape(shape[-1], nr_inputs)
 weights = [weights[:48].reshape(6, 8), weights[48:72].reshape(4, 6), weights[72:].reshape(1, 4)]
 biases = [biases[:6].reshape(-1, 1), biases[6:10].reshape(-1, 1), biases[10:].reshape(-1, 1)]
 gradients_biases = [np.zeros((shape[1], nr_inputs)),

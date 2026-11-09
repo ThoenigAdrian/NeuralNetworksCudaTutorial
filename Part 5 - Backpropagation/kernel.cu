@@ -137,7 +137,7 @@ int main()
 	}
 
 	float *host_weights = new float [nr_weights] {1.62f, -0.61f, -0.53f, -1.07f, 0.87f, -2.30f, 1.74f, -0.76f, 0.32f, -0.25f, 1.46f, -2.06f, -0.32f, -0.38f, 1.13f, -1.10f, -0.17f, -0.88f, 0.04f, 0.58f, -1.10f, 1.14f, 0.90f, 0.50f, 0.90f, -0.68f, -0.12f, -0.94f, -0.27f, 0.53f, -0.69f, -0.40f, -0.69f, -0.85f, -0.67f, -0.01f, -1.12f, 0.23f, 1.66f, 0.74f, -0.19f, -0.89f, -0.75f, 1.69f, 0.05f, -0.64f, 0.19f, 2.10f, 0.12f, 0.62f, 0.30f, -0.35f, -1.14f, -0.35f, -0.21f, 0.59f, 0.84f, 0.93f, 0.29f, 0.89f, -0.75f, 1.25f, 0.51f, -0.30f, 0.49f, -0.08f, 1.13f, 1.52f, 2.19f, -1.40f, -1.44f, -0.50f, 0.16f, 0.88f, 0.32f, -2.02f};
-	float *host_target = new float [NR_INPUTS * shape[shape_length - 1]] {0.78, 0.64, -0.55}; // This are the values we want to the network to produce after training , basically our "labels" we need them so we can compute any gradients at all just set them 0.3 and 0.6 no special meaning
+	float *host_target = new float [NR_INPUTS * shape[shape_length - 1]] {0.78, 0.64, 0.55}; // This are the values we want to the network to produce after training , basically our "labels" we need them so we can compute any gradients at all just set them 0.3 and 0.6 no special meaning
 
 	// Initialize biases on CPU/RAM
 	int nr_neurons = 0;
