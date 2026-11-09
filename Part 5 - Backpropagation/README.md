@@ -13,7 +13,7 @@ But in order to use gradient descent we need to compute the gradients first. And
 
 ### 2.1 Initial Gradients
 
-*Single Neuron*
+**Single Neuron**
 
 We start by looking at the last layer first and then how to move backwards through the network. So first we need an initial gradient for the output neuron usually this comes from a loss function.
 For starters we are just going to assume that the gradients of the output neurons can be described as “target – activations”. Where target is the value, we want our neural network to produce. 
@@ -25,7 +25,7 @@ Then target – activations will be 0.13 . So the gradient for this neuron would
 Each target has its corresponding input.
 In the current image we can see only one output neuron.
 
-*Multiple Neurons*
+**Multiple Neurons**
 
 Each neuron has its own target and it’s own activation.
 We compute all the gradients for all the biases.
