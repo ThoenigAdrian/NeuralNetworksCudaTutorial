@@ -27,7 +27,7 @@ __global__ void feed_forward_and_backprop(float *weight_matrix, float *biases, f
 	int layer_offset_activations_input_layer = 0;
 	int layer_offset_activations_current_layer = shape[0] * gridDim.x;
 	
-	for (int shape_index = 0; shape_index < shape_length; shape_index++)
+	for (int shape_index = 0; shape_index < shape_length - 1; shape_index++)
 	{
 		// Other threads don't execute anything to avoid out of bounds access
 		if (id < shape[shape_index + 1])
