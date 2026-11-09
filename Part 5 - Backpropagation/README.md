@@ -1,3 +1,8 @@
+> [!WARNING]
+> 🚧 **Work in Progress**
+>
+> Part 5 written is still in progress , video is finished. Written github readme blog post will be finished by 16.11
+
 # Part 5 - Backpropagation
 
 Last time we finished the feedforward code it now supports multiple inputs, and the neural network can have multiple layers. Now we will implement backpropagation so we can get the gradients and finally do gradient descent.
